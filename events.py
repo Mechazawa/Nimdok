@@ -1,0 +1,5 @@
+events = {
+    'msg':[],
+    'action':[],
+    'quit':[]
+}
