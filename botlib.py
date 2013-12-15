@@ -4,7 +4,9 @@ from random import randrange
 from re import compile
 from socket import AF_INET, SOCK_STREAM, socket
 from sqlite3 import connect
-import inspect, os
+import inspect
+import os
+
 
 class connection(object):
     def __init__(self, server, port, channels, nick, cb, commands, password="", channelpasswd="", verbose=False):
@@ -91,6 +93,8 @@ class connection(object):
                         func = method[1]
                         if ((gr.group(5)+' ')[:(len(cmd)+2)] == "!"+cmd+' ' and cmd[:1] != "_"):
                             func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
+                elif gr.group(5) == "\001VERSION\001":
+                    self.lsend('NOTICE %s :\001VERSION %s\001' % (gr.group(1), self.callback.version()))
                 else:
                     self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
             elif(gr.group(3) == 'PART'):
@@ -160,6 +164,9 @@ class callback(object):
     def join(self, bot, user, channel):
         #print user+" joined "+channel
         pass
+
+    def version():
+        return "SPBL-framework"
 
     def quit(self, bot, user, channel, message):
         #print user+" joined "+channel
