@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
+
 from random import randrange
 from re import compile
 from socket import AF_INET, SOCK_STREAM, socket
@@ -9,19 +10,21 @@ import os
 
 
 class connection(object):
-    def __init__(self, server, port, channels, nick, cb, commands, password="", channelpasswd="", verbose=False):
-        self.server, self.port, self.channels, self.nick, self.callback, self.commands, self.password, self.verbose = server, port, channels, nick, cb, commands, password, verbose
+    def __init__(self, server, port, channels, nick, cb, commands, password="", commandprefix = ":", verbose=False):
+        self.server, self.port, self.channels, self.nick, self.callback, self.commands, self.password, self.verbose = server, port, channels, nick, cb, commands, password, verbose #don't judge this line of code plz
+        self.commandprefix = commandprefix
         self.r = compile('^(?:[:](\S+)!)?(\S+)(?: (?!:)(.+?))(?: (?!:)(.+?))?(?: [:](.+))?$')
         self.running = True
 
-    def lsend(self, s):
+
+    def _lsend(self, s):
         self.sock.send(s + '\r\n')
 
-    def lrecv(self):
+    def _lrecv(self):
         c, s = '', ''
         while c != '\n':
             c = self.sock.recv(1)
-            if c == '': # connection closed
+            if c == '':
                 break
             s += c
         line = s.strip('\r\n')
@@ -33,14 +36,13 @@ class connection(object):
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((self.server, self.port))
 
-        self.lsend('USER %s 0 0 :bot' % (''.join([chr(randrange(ord('a'),
-                                                ord('z'))) for i in range(8)])))
-        self.lsend('NICK %s 0' % self.nick)
+        self._lsend('USER %s 0 0 :bot' % (''.join([chr(randrange(ord('a'), ord('z'))) for i in range(8)])))
+        self._lsend('NICK %s 0' % self.nick)
 
         realNick = self.nick
         # Wait for the 001 status reply.
         while 1:
-            line = self.lrecv()
+            line = self._lrecv()
             if(self.verbose):
                 print(line)
             if compile(':[^ ]+ 001 ').match(line):
@@ -48,36 +50,41 @@ class connection(object):
             elif 'Nickname is already in use' in line:
                 # Change username if taken
                 realNick = realNick + '_'
-                self.lsend('NICK %s 0' % realNick)
+                self._lsend('NICK %s 0' % realNick)
             elif line == '':
+                return
                 raise 'ConnectError', (self.server, self.port, 'EOFBefore001')
 
         #identify with the NICKSERV if needed
         if self.password != "" and realNick != self.nick:
+            print "Ghosting my enemy"
             self.msg('NICKSERV', 'GHOST %s %s' % (self.nick, self.password))
             while 1:
-                line = self.lrecv().lower()
+                line = self._lrecv().lower()
                 if 'has been ghosted' in line:
-                    self.lsend('NICK %s 0' % self.nick)
+                    self._lsend('NICK %s 0' % self.nick)
                     break
                 elif 'invalid password for' in line:
                     break
+
         if self.password != "":
-            self.msg('NICKSERV', 'IDENTIFY %s' % self.password)
+            self.msg('NICKSERV', 'identify %s' % self.password)
 
         # Join the channels.
         for channel in self.channels:
-            self.lsend('JOIN ' + channel)
+            self._lsend('JOIN ' + channel)
+
 
         while self.running:
-            line = self.lrecv()
+            line = self._lrecv()
 
             if line == '':
                 raise 'ConnectionClose', (self.server, self.port)
+                return
 
             elif line[:6] == 'PING :':
-                if(self.verbose): print ' PONG :' + line[6:]
-                self.lsend('PONG :' + line[6:])
+                if(self.verbose): print(' PONG :' + line[6:])
+                self._lsend('PONG :' + line[6:])
                 continue
 
             gr = self.r.match(line)
@@ -87,16 +94,16 @@ class connection(object):
             elif(gr.group(3) == 'PRIVMSG' and '\001ACTION' in gr.group(5)):
                 self.callback.action(self, gr.group(1), gr.group(4), gr.group(5)[8:][:-1])
             elif(gr.group(3) == 'PRIVMSG'):
-                if(gr.group(5)[:1] == "!"):
+                if gr.group(5) == "\001VERSION\001":
+                    self.notice(gr.group(1), self.callback.version() or "SPBL-framework")
+                    continue
+                if(gr.group(5)[:1] == self.commandprefix):
                     for method in inspect.getmembers(self.commands, predicate=inspect.ismethod):
                         cmd = method[0]
                         func = method[1]
-                        if ((gr.group(5)+' ')[:(len(cmd)+2)] == "!"+cmd+' ' and cmd[:1] != "_"):
+                        if ((gr.group(5)+' ')[:(len(cmd)+2)] == self.commandprefix+cmd+' ' and cmd[:1] != "_"):
                             func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
-                elif gr.group(5) == "\001VERSION\001":
-                    self.lsend('NOTICE %s :\001VERSION %s\001' % (gr.group(1), self.callback.version()))
-                else:
-                    self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
+                self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
             elif(gr.group(3) == 'PART'):
                 self.callback.part(self, gr.group(1), gr.group(4), gr.group(5))
             elif(gr.group(3) == 'JOIN'):
@@ -108,36 +115,40 @@ class connection(object):
 
             self.callback.raw(self, line)
 
+    # Server commands etc
     def msg(self, what, msg):
+        #msg = msg.encode("utf-8", "ignore")
         for line in str(msg).replace('\r', '').split('\n'):
-            self.lsend('PRIVMSG %s :%s' % (what, line))
+            self._lsend('PRIVMSG %s :%s' % (what, line))
 
     def action(self, what, msg):
-        self.lsend('PRIVMSG %s :\001ACTION %s\001' % (what, str(msg)))
+        self._lsend('PRIVMSG %s :\001ACTION %s\001' % (what, str(msg)))
 
     def join(self, channel):
-        self.lsend('JOIN ' + channel.replace('\n', ''))
+        self._lsend('JOIN ' + channel.replace('\n', ''))
 
     def part(self, channel, reason=" "):
-        self.lsend('PART %s :%s' % (channel, str(reason.replace('\n', ''))))
-        self.running = False
+        self._lsend('PART %s :%s' % (channel, str(reason.replace('\n', ''))))
 
     def quit(self, reason="Bot shutting down"):
-        self.lsend('QUIT :' + str(reason.replace('\n', '')))
+        self._lsend('QUIT :' + str(reason.replace('\n', '')))
         self.running = False
 
     def nick(self, nick):
-        self.lsend('NICK :' + nick.replace('\n', ''))
+        self._lsend('NICK :' + nick.replace('\n', ''))
 
     def names(self, channel):
-        self.lsend('NAMES ' + channel.replace('\n', ''))
-        return self.lrecv().split(':')[2].split()
+        self._lsend('NAMES ' + channel.replace('\n', ''))
+        return self._lrecv().split(':')[2].split()
+
+    def notice(self, what, message):
+        self._lsend('NOTICE %s :%s' % (what, message))
 
     def list(self):
-        self.lsend('LIST')
+        self._lsend('LIST')
         channels = []
         while 1:
-            raw = self.lrecv()
+            raw = self._lrecv()
             if raw[-13:] == ":End of /LIST":
                 break
             raw = raw.replace('\r', '').split('\n')
@@ -149,6 +160,10 @@ class connection(object):
                 except:
                     pass
         return channels
+
+    # Info commands
+    def getNick(self):
+        return self.nick
 
 
 
@@ -192,32 +207,3 @@ class commands(object):
             return [int(row[1]) if row[1].replace('-','').isdigit() else row[1] for row in c]
         else:
             return c
-
-
-class settings(object):
-    def __init__(self, filename):
-        if not os.path.isfile(filename):
-            tmpcon = connect(filename)
-            print "Database file not found. Creating one..."
-            c = tmpcon.cursor()
-            c.execute("CREATE TABLE prefs(nick VARCHAR, setting VARCHAR, value VARCHAR, PRIMARY KEY(nick, setting));")
-            tmpcon.commit()
-            c.close()
-            print "Done"
-        self.conn = connect(filename)
-
-    def get(self, nick, pref, default):
-        c = self.conn.cursor()
-        for row in c.execute("SELECT value FROM prefs WHERE nick = ? AND setting = ?", (nick, pref)):
-            c.close()
-            return int(row[0]) if row[0].replace('-','').isdigit() else row[0]
-        c.execute("INSERT INTO prefs (nick, setting, value) VALUES (?,?,?)", (nick, pref, default))
-        self.conn.commit()
-        c.close()
-        return default
-
-    def set(self, nick, pref, value):
-        c = self.conn.cursor()
-        c.execute("INSERT OR REPLACE INTO prefs (nick, setting, value) VALUES (?,?,?)", (nick, pref, str(value)))
-        self.conn.commit()
-        c.close()

@@ -1,18 +1,38 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import urllib2
 from bs4 import BeautifulSoup
 import events
+import Util.net as netutil
+import Util.irc as ircutil
+import Util.human as humanutil
 
-ignoreddomains = ["youtube.com"]
+
+class HeadRequest(urllib2.Request):
+    def get_method(self):
+        return "HEAD"
+
+
+ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
 def parse(bot, user, channel, msg):
     for m in msg.split(' '):
         if m[:4] == "http" and '//' in m[5:-len(m)+8]:
-            domain = m.split('/')[2].split('?')[0]
-            domain = domain.split('.', domain.count(".")-1)[-1]
-            if domain in ignoreddomains: continue
+            if netutil.getdomain(m, True) in ignoreddomains: continue
             try:
-                soup = BeautifulSoup(urllib2.urlopen(m))
-                bot.msg(channel, soup.title.text.strip())
-            except Exception: pass
+                head = urllib2.urlopen(HeadRequest(m))
+                head.read()
+                mimetype = head.headers.type
+                if "html" in mimetype.lower():
+                    dta = urllib2.urlopen(m).read()
+                    ret = dta if '<title>' not in dta.lower() else BeautifulSoup(dta).title.text.strip()
+                    bot.msg(channel, ircutil.Trunicate(ret, 150).replace("\r", "").replace("\n", ""))
+                elif "text" in mimetype.lower():
+                    txt = urllib2.urlopen(m).read()
+                    bot.msg(channel, ircutil.Trunicate(txt.replace("\n", " ").replace("\r", "")))
+                else:
+                    size = int(urllib2.urlopen(m).info().getheaders("Content-Length")[0])
+                    bot.msg(channel, "%s | %s" % (mimetype, humanutil.sizefmt(size)))
+            except Exception, e: print e
 
-events.setEvent('msg', 'urlinfo', parse)
-print "urlinfo module loaded"
+events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
