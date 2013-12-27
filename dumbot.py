@@ -25,7 +25,8 @@ class callback(botlib.callback):
             "Why are you even requesting this from a bot",
             "You are now breathing manually",
             "You are now aware of your blinking",
-            "Microsoft(tm) irc toolkit 1995"
+            "Microsoft™ irc toolkit 1995",
+            "It just werks™ technology"
         ])
 
     def msg(self, bot, user, channel, msg):
@@ -45,22 +46,30 @@ class callback(botlib.callback):
         print(user+" in "+channel+" did "+action)
 
     def join(self, bot, user, channel):
-        print(user+" joined")
+        print(user+" joined ")
+        for c in events.getEvents('join'):
+            try: 
+                #c(bot, user, channel, msg)
+                thread.start_new(c, (bot, user, channel,))
+            except Exception, e: 
+                print e
+                print traceback.format_exc()
 
 #bot essential commands
 class commands(botlib.commands):
     def reload(self, bot, user, channel, args):
-        if user.lower() != 'bas_': return
-        events.clearEvents()
-        reload(modules)
-        bot.msg(channel, "Reloaded all the modules")
+        if self._ispriv(bot, user): 
+            events.clearEvents()
+            reload(modules)
+            bot.msg(channel, "Reloaded all the modules")
 
     def shutup(self, bot, user, channel, args):
-        if not user.lower() in ["bas_", "lammjohnson", "redlizard", "chown", "naosia", "davexunit"]:
+        if not self._ispriv(bot, user):
             return
         global wait
         if datetime.datetime.now() < wait:
             bot.msg(channel, "Aready shutting up")
+            return
         if args.strip() == "":
             args = "5"
         try:
@@ -74,18 +83,24 @@ class commands(botlib.commands):
             bot.msg(channel, "Usage: :shutup {minutes}")
 
     def speak(self, bot, user, channel, args):
-        if not user.lower() in ["bas_", "lammjohnson", "redlizard", "chown", "naosia", "davexunit"]:
+        if not self._ispriv(bot, user):
             return
         global wait
         wait = datetime.datetime.now()
         bot.msg(channel, "I'm back bitches!")
 
+    def _ispriv(self, bot, user):
+        if user.lower() == 'sicpbot': #nice try faggot
+            return False
+        who = bot.who(user)
+        print "%s [%s]" % (user, who['mode'])
+        return (user.lower() == "bas_" and 'r' in  who['mode']) or (len([x for x in "%&@" if x in who['mode']]) > 0)
 
 #datetime.datetime.now()<(datetime.datetime.now() + datetime.timedelta(seconds=3))
 #with open('../../botpassword', 'r') as f:
 #   nickpass = f.read()
 
 if __name__ == '__main__':
-    irc = botlib.connection('irc.rizon.net', 6667, ['#/g/sicp', '#/g/spam'], 'Nimdok', callback(), commands())
+    irc = botlib.connection('irc.rizon.net', 6667, ['#/g/sicp', '#/g/trivia', '#/g/spam'], 'Nimdok', callback(), commands())
     irc.go()
 

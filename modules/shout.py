@@ -7,15 +7,18 @@ import os
 from datetime import datetime, time
 import random
 
-
+dbfile="dbs/shout.db"
 def parse(bot, user, channel, msg):
+    if msg[0] == ":":
+        return #Not even worth doing anything after this if we know someone executed a command
     global lastShout
     if (datetime.now() - lastShout).seconds < random.randint(10,40):
         return
     lastShout = datetime.now()
-    database = sqlite3.connect("shout.db")
+    database = sqlite3.connect(dbfile)
     ret = ""
-    if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower() : return
+    if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower() or user.lower() == "sicpbot": 
+        return
     c = database.cursor()
     shouts = []
     for row in c.execute("SELECT shout from shouts"):
@@ -27,8 +30,8 @@ def parse(bot, user, channel, msg):
     if ret:
         bot.msg(channel, ret)
 
-if not os.path.isfile("shout.db"):
-        tmpcon = sqlite3.connect("shout.db")
+if not os.path.isfile(dbfile):
+        tmpcon = sqlite3.connect(dbfile)
         c = tmpcon.cursor()
         c.execute("CREATE TABLE shouts(id INTEGER PRIMARY KEY, nick VARCHAR, shout VARCHAR);")
         tmpcon.commit()

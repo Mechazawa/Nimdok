@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from random import randrange
-from re import compile
+import re
 from socket import AF_INET, SOCK_STREAM, socket
 from sqlite3 import connect
 import inspect
@@ -13,7 +13,7 @@ class connection(object):
     def __init__(self, server, port, channels, nick, cb, commands, password="", commandprefix = ":", verbose=False):
         self.server, self.port, self.channels, self.nick, self.callback, self.commands, self.password, self.verbose = server, port, channels, nick, cb, commands, password, verbose #don't judge this line of code plz
         self.commandprefix = commandprefix
-        self.r = compile('^(?:[:](\S+)!)?(\S+)(?: (?!:)(.+?))(?: (?!:)(.+?))?(?: [:](.+))?$')
+        self.r = re.compile('^(?:[:](\S+)!)?(\S+)(?: (?!:)(.+?))(?: (?!:)(.+?))?(?: [:](.+))?$')
         self.running = True
 
 
@@ -45,7 +45,7 @@ class connection(object):
             line = self._lrecv()
             if(self.verbose):
                 print(line)
-            if compile(':[^ ]+ 001 ').match(line):
+            if re.compile(':[^ ]+ 001 ').match(line):
                 break
             elif 'Nickname is already in use' in line:
                 # Change username if taken
@@ -87,33 +87,36 @@ class connection(object):
                 self._lsend('PONG :' + line[6:])
                 continue
 
-            gr = self.r.match(line)
-            if(gr.group(1) == self.nick):
-                continue
-
-            elif(gr.group(3) == 'PRIVMSG' and '\001ACTION' in gr.group(5)):
-                self.callback.action(self, gr.group(1), gr.group(4), gr.group(5)[8:][:-1])
-            elif(gr.group(3) == 'PRIVMSG'):
-                if gr.group(5) == "\001VERSION\001":
-                    self.notice(gr.group(1), self.callback.version() or "SPBL-framework")
+            try:
+                gr = self.r.match(line)
+                if(gr.group(1) == self.nick):
                     continue
-                if(gr.group(5)[:1] == self.commandprefix):
-                    for method in inspect.getmembers(self.commands, predicate=inspect.ismethod):
-                        cmd = method[0]
-                        func = method[1]
-                        if ((gr.group(5)+' ')[:(len(cmd)+2)] == self.commandprefix+cmd+' ' and cmd[:1] != "_"):
-                            func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
-                self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
-            elif(gr.group(3) == 'PART'):
-                self.callback.part(self, gr.group(1), gr.group(4), gr.group(5))
-            elif(gr.group(3) == 'JOIN'):
-                self.callback.join(self, gr.group(1), gr.group(4))
-            elif(gr.group(3) == 'QUIT'):
-                self.callback.quit(self, gr.group(1), gr.group(4), gr.group(5))
-            elif(gr.group(2) == 'NICK'):
-                self.callback.nick(self, gr.group(1), gr.group(3))
 
-            self.callback.raw(self, line)
+                elif(gr.group(3) == 'PRIVMSG' and '\001ACTION' in gr.group(5)):
+                    self.callback.action(self, gr.group(1), gr.group(4), gr.group(5)[8:][:-1])
+                elif(gr.group(3) == 'PRIVMSG'):
+                    if gr.group(5) == "\001VERSION\001":
+                        self.notice(gr.group(1), self.callback.version() or "SPBL-framework")
+                        continue
+                    if(gr.group(5)[:1] == self.commandprefix):
+                        for method in inspect.getmembers(self.commands, predicate=inspect.ismethod):
+                            cmd = method[0]
+                            func = method[1]
+                            if ((gr.group(5)+' ')[:(len(cmd)+2)] == self.commandprefix+cmd+' ' and cmd[:1] != "_"):
+                                func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
+                    self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
+                elif(gr.group(3) == 'PART'):
+                    self.callback.part(self, gr.group(1), gr.group(4), gr.group(5))
+                elif(gr.group(3) == 'JOIN'):
+                    self.callback.join(self, gr.group(1), gr.group(4))
+                elif(gr.group(3) == 'QUIT'):
+                    self.callback.quit(self, gr.group(1), gr.group(4), gr.group(5))
+                elif(gr.group(2) == 'NICK'):
+                    self.callback.nick(self, gr.group(1), gr.group(3))
+
+                self.callback.raw(self, line)
+            except:
+                pass
 
     # Server commands etc
     def msg(self, what, msg):
@@ -143,6 +146,20 @@ class connection(object):
 
     def notice(self, what, message):
         self._lsend('NOTICE %s :%s' % (what, message))
+
+    def who(self, who):
+        self._lsend('WHO %s' % (who.split()[0]))
+        resp = ""
+        while not "352" in resp:
+            resp = self._lrecv()
+        match = re.match(':\S+ \d+ \S+ \S+ ~(\S+) (\S+) \* (\S+) (\S+) :\d+ (\S+)', resp)
+        return {
+            "user" : match.group(1),
+            "host" : match.group(2),
+            "nick" : match.group(3),
+            "mode" : match.group(4),
+            "name" : match.group(5)
+        }
 
     def list(self):
         self._lsend('LIST')
