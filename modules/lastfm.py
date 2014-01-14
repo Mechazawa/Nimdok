@@ -6,9 +6,10 @@ import urllib2
 import Util.irc as ircutil
 import sqlite3
 import os
+from xml.dom.minidom import parseString
 
-
-apiurl="http://ws.audioscrobbler.com/1.0/user/{USER}/recenttracks.rss?limit=1&format=txt"
+apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&limit=1"
+lastfmkey=""
 dbfile="dbs/lastfm.db"
 command=":np"
 def parse(bot, user, channel, msg):
@@ -24,15 +25,38 @@ def parse(bot, user, channel, msg):
           if not fmuser:
               bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
           else:
-              playing = getplaying(fmuser).strip().replace('\n', ' ').replace('\r' ,'')
-              bot.msg(channel, ircutil.Bold(user) + " is now playing " + ircutil.Bold(playing).strip())
+              #Curtosy of psycho
+              url = apiurl.replace('{USER}', fmuser).replace('{APIKEY}', lastfmkey)
+              data = urllib2.urlopen(url).read()
+              dom = parseString(data)
             
+              artistxml = dom.getElementsByTagName('artist')[0].toxml()
+              trackxml = dom.getElementsByTagName('name')[0].toxml()
+
+              artist = artistxml.rsplit('>')[1].replace('</artist','').strip().replace('\n', '')
+              track = trackxml.rsplit('>')[1].replace('</name','').strip().replace('\n', '')
+              
+              state = "last heard"
+              try:
+                  data.index('nowplaying')
+              except:
+                  pass
+              else:
+                  state = "is now playing"
+              bot.msg(channel, "%s %s %s - %s" % (
+                  ircutil.Bold(user), state,
+                  ircutil.Bold(ircutil.Trunicate(artist, 100)), 
+                  ircutil.Bold(ircutil.Trunicate(track, 100))
+              ))
     elif s[0].lower() == "register":
         if len(s) != 2:
             bot.msg(channel, "%s: Usage, :np register [last fm nickname]" % user)
         else:
-            nick = s[1]
-            if getplaying(nick):
+            nick = s[1].strip()
+            url = "http://ws.audioscrobbler.com/1.0/user/%s/recenttracks.rss?limit=1&format=txt" % nick
+            print url
+            raw = urllib2.urlopen(url).read()
+            if not "No user exists with this name." in raw:
                 cursor.execute("DELETE FROM lastfm WHERE nick = ?", (user, ))
                 cursor.execute("INSERT INTO lastfm(nick, lastfm) VALUES (?, ?)", (user, nick))
                 database.commit()
@@ -40,20 +64,13 @@ def parse(bot, user, channel, msg):
             else:
                 bot.msg(channel, "No user found with the nickname \"%s\"" % nick)
     cursor.close()
-            
-def getplaying(user):
-    try:
-      raw = urllib2.urlopen(apiurl.replace("{USER}", user)).read()
-      if "No user exists with this name." in raw:
-          return False
-      else:
-          return raw.split(',', 2)[1]
-    except Exception, e:
-        print e
-        return False
-
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
+
+#get api key
+with open('../../lastfmkey', 'r') as f:
+    lastfmkey = f.read().strip()
+              
 
 #create database 
 if not os.path.isfile(dbfile):

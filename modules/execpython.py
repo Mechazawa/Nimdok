@@ -25,6 +25,7 @@ def parse(bot, user, channel, msg):
         args = msg[len(command)+1:]
         url = "%sshell.do?&statement=%s&session=%s" % (apiurl, urllib2.quote(args), urllib2.quote(pykey))
         resp = urllib2.urlopen(url).read().rstrip()
+        resp = resp.replace('\001', '')
         if '\n' in resp or '\r' in resp:
             paste = urllib2.urlopen("http://nnmm.nl/", urllib2.quote(resp)).read()
             bot.msg(channel, "%s: %s" % (user, paste))

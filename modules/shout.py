@@ -12,12 +12,12 @@ def parse(bot, user, channel, msg):
     if msg[0] == ":":
         return #Not even worth doing anything after this if we know someone executed a command
     global lastShout
-    if (datetime.now() - lastShout).seconds < random.randint(10,40):
+    if (datetime.now() - lastShout).seconds < random.randint(10,40) or user.lower() == "sicpbot": 
         return
     lastShout = datetime.now()
     database = sqlite3.connect(dbfile)
     ret = ""
-    if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower() or user.lower() == "sicpbot": 
+    if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower():
         return
     c = database.cursor()
     shouts = []

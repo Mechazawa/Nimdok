@@ -11,7 +11,7 @@ def parse(bot, user, channel, msg):
     global lasturl
     if msg.lower()[:len(command)+1].rstrip() == command:
     	if lasturl:
-        	bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://tinyurl.com/api-create.php?url="+urllib2.quote(lasturl)).read()))
+            bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://is.gd/create.php?format=simple&url="+urllib2.quote(lasturl)).read()))
         else:
         	bot.msg(channel, "Nothing to minify")
     else:

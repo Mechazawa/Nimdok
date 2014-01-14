@@ -8,8 +8,10 @@ import Util.irc as ircutil
 
 command = ":bf"
 def parse(bot, user, channel, msg):
+    return
     if msg.lower()[:len(command)+1].rstrip() == command:
-        msg  = msg[len(command)+1:]
+        msg = msg[len(command)+1:]
+        print "[Brainfuck] Found %i bytes of brainfuck" % len(msg)
         try:
             resp = bf(msg, 0, len(msg)-1, "", 0).rstrip()
             if '\n' in resp or '\r' in resp:
@@ -21,7 +23,8 @@ def parse(bot, user, channel, msg):
                 bot.msg(channel, "%s: %s" % (user, paste))
             else:
                 bot.msg(channel, resp)
-        except:
+        except Exception, e:
+            print e
             bot.msg(channel, "I know brainfuck is hard... Check your code!")
 
 

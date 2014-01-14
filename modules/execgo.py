@@ -21,7 +21,7 @@ def parse(bot, user, channel, msg):
             imports = "import(\n    %s\n);\n" % ';\n    '.join(imp)
             main = args[1]
 
-        prog = "package main;\n%sfunc main(){\n    %s\n}" % (imports, main.lstrip())
+        prog = "package main;\n%sfunc main(){\n    %s;\n}" % (imports, main.lstrip().strip(';'))
         resp = urllib2.urlopen("http://golang.org/compile", "body=%s" % urllib2.quote(prog)).read()
         jo = json.loads(resp)
 

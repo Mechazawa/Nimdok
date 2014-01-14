@@ -9,6 +9,7 @@ import traceback
 import thread
 import random
 import datetime
+import argparse
 
 wait = datetime.datetime.now()
 
@@ -35,33 +36,55 @@ class callback(botlib.callback):
         if datetime.datetime.now() < wait or user == "SICPBot":
             return
         for c in events.getEvents('msg'):
-            try: 
+            try:
                 #c(bot, user, channel, msg)
                 thread.start_new(c, (bot, user, channel, msg,))
-            except Exception, e: 
+            except Exception, e:
                 print e
                 print traceback.format_exc()
 
     def action(self, bot, user, channel, action):
-        print(user+" in "+channel+" did "+action)
+        print(user+" in "+channel+"* "+action)
+        global wait
+        if datetime.datetime.now() < wait or user == "SICPBot":
+            return
+        for c in events.getEvents('action'):
+            try:
+                #c(bot, user, channel, msg)
+                thread.start_new(c, (bot, user, channel, msg,))
+            except Exception, e:
+                print e
+                print traceback.format_exc()
 
     def join(self, bot, user, channel):
         print(user+" joined ")
+        global wait
+        if datetime.datetime.now() < wait or user == "SICPBot":
+            return
         for c in events.getEvents('join'):
-            try: 
+            try:
                 #c(bot, user, channel, msg)
                 thread.start_new(c, (bot, user, channel,))
-            except Exception, e: 
+            except Exception, e:
                 print e
                 print traceback.format_exc()
+
+    def invite(self, bot, user, channel):
+        bot.join(channel)
 
 #bot essential commands
 class commands(botlib.commands):
     def reload(self, bot, user, channel, args):
-        if self._ispriv(bot, user): 
+        print "Someone called reload"
+        if self._ispriv(bot, user):
             events.clearEvents()
-            reload(modules)
-            bot.msg(channel, "Reloaded all the modules")
+            try:
+              reload(modules)
+              bot.msg(channel, "Reloaded all the modules")
+            except Exception, e:
+              print e
+              bot.msg(channel, "Something went wrong when I tried to reload my modules :< (did you make a typo somewhere?)")
+
 
     def shutup(self, bot, user, channel, args):
         if not self._ispriv(bot, user):
@@ -94,13 +117,19 @@ class commands(botlib.commands):
             return False
         who = bot.who(user)
         print "%s [%s]" % (user, who['mode'])
-        return (user.lower() == "bas_" and 'r' in  who['mode']) or (len([x for x in "%&@" if x in who['mode']]) > 0)
+        return len([x for x in "~%&@" if x in who['mode']]) > 0
 
-#datetime.datetime.now()<(datetime.datetime.now() + datetime.timedelta(seconds=3))
-#with open('../../botpassword', 'r') as f:
-#   nickpass = f.read()
 
 if __name__ == '__main__':
-    irc = botlib.connection('irc.rizon.net', 6667, ['#/g/sicp', '#/g/trivia', '#/g/spam'], 'Nimdok', callback(), commands())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--nick',    dest='nick', help='nickname', default='Nimdok')
+    parser.add_argument('-s', '--server',  dest='host', help='server',   default='irc.rizon.net')
+    parser.add_argument('-p', '--port',    dest='port', help='port',     default=6667, type=int)
+    parser.add_argument('-c', '--channel', dest='chan', help='comma sepperated channels', default='#/g/sicp,#/g/spam')
+    parser.add_argument(      '--password',dest='passw', help='nick password', default='')
+    parser.add_argument('-v', '--verbose', dest='verbose', help='enable verbose mode', action='store_true')
+
+    args = parser.parse_args()
+    irc = botlib.connection(args.host, args.port, args.chan.split(','), args.nick, callback(), commands(), password=args.passw, verbose=args.verbose)
     irc.go()
 

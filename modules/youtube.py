@@ -4,17 +4,20 @@
 import urllib2
 import json
 import events
-import re
 import Util.irc as irc
 import Util.net as netutil
 import Util.human as human
+from re import compile
 
+#ytRegex = compile(r"""(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})""")
+ytRegex = compile(r"youtu.+\W([A-Za-z0-9\-_]{11})(\W|$)")
 apiurl = "https://gdata.youtube.com/feeds/api/videos/{VID}?alt=json&v=2"
 def parse(bot, user, channel, msg):
     for m in msg.split(' '):
         if m[:4] == "http" and '//' in m[5:-len(m)+8]:
             if 'youtube.' in netutil.getdomain(m) or 'youtu.be' in netutil.getdomain(m):
-                vid = re.search(r"[A-Za-z0-9_-]{11}", m).group(0)
+                vid = ytRegex.search(m).group(1)
+                print "[Youtube] Matched " + vid
                 jo = json.loads(urllib2.urlopen(apiurl.replace("{VID}", vid)).read())
                 data = {
                     "views" : int(jo["entry"]["yt$statistics"]["viewCount"]),
@@ -27,7 +30,7 @@ def parse(bot, user, channel, msg):
                 #TODO this needs some minor refactoring
                 fmt = u"%s %s %s %s | %s views"
                 info = fmt % (
-                        irc.Bold(irc.Trunicate(data["title"])),
+                        irc.Bold(irc.Trunicate(data["title"], 60)),
                         data["author"],
                         irc.SetColor(u"↑" + human.intcomma(data["likes"]), irc.Color.Green),
                         irc.SetColor(u"↓" + human.intcomma(data["dislikes"]), irc.Color.Red),

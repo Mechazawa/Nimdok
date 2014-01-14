@@ -29,6 +29,7 @@ def parse(bot, user, channel, msg):
       bot.msg(channel, "Wolfram alpha returned an error")
     elif tree.get('numpods') > 0:
       result = tree.find('pod').find('subpod').find('plaintext').text
+      result = result.encode('UTF-8', 'ignore') #fucking unicode
       bot.msg(channel, "%s: %s" % (user, ircutil.Trunicate(result.split('\n')[0] ,300)))
       if len(result) > 300 or '\n' in result:
           ircutil.SetMore(result)
@@ -42,4 +43,4 @@ events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
 
 #obtain the wolfram alpha key
 with open("../../wolframkey", 'r') as f:
-    wolframkey = f.read()
+    wolframkey = f.read().strip()

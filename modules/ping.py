@@ -5,7 +5,7 @@ import events
 command = ":ping"
 def parse(bot, user, channel, msg):
     if msg.lower()[:len(command)+1].rstrip() == command:
-        bot.msg(channel, user+": PONG")
+        bot.msg(channel, user+": PONG motherfucker!")
 
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)

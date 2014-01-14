@@ -57,7 +57,6 @@ class connection(object):
 
         #identify with the NICKSERV if needed
         if self.password != "" and realNick != self.nick:
-            print "Ghosting my enemy"
             self.msg('NICKSERV', 'GHOST %s %s' % (self.nick, self.password))
             while 1:
                 line = self._lrecv().lower()
@@ -68,7 +67,7 @@ class connection(object):
                     break
 
         if self.password != "":
-            self.msg('NICKSERV', 'identify %s' % self.password)
+            self.msg('nickserv', 'identify %s' % self.password)
 
         # Join the channels.
         for channel in self.channels:
@@ -113,6 +112,8 @@ class connection(object):
                     self.callback.quit(self, gr.group(1), gr.group(4), gr.group(5))
                 elif(gr.group(2) == 'NICK'):
                     self.callback.nick(self, gr.group(1), gr.group(3))
+                elif(gr.group(3) == 'INVITE'):
+                    self.callback.invite(self, gr.group(1), gr.group(5))
 
                 self.callback.raw(self, line)
             except:
@@ -210,6 +211,9 @@ class callback(object):
 
     def nick(self, bot, oldnick, newnick):
         #print oldnick+" is now know as "+newnick
+        pass
+
+    def invite(self, bot, user, channel):
         pass
 
     def raw(self, bot, data):
