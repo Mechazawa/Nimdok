@@ -6,8 +6,8 @@ import json
 from re import compile
 
 import events
-import util.irc as irc
-import util.net as netutil
+import BotKit.util.irc as irc
+import BotKit.util.net as netutil
 import BotKit.util.human as human
 
 

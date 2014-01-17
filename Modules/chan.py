@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 import events
 import BotKit.util.irc as irc
-import util.net as netutil
+import BotKit.util.net as netutil
 
 
 apiurl = "https://a.4cdn.org/"
