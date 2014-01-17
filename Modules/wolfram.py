@@ -7,19 +7,19 @@ import lxml.etree as et
 
 import events
 import BotKit.util.irc as ircutil
+import apikeys
 
 
 apiurl="http://api.wolframalpha.com/v2/query?"
 #set params
 apiurl+="units=metric&location=Amsterdam&reinterpret=true&format=plaintext&excludepodid=Input&"
-wolframkey=""
 command=":wa"
 def parse(bot, user, channel, msg):
   if msg.lower()[:len(command)+1].rstrip() == command:
     msg = msg[len(command)+1:]
     
     #build url
-    url = apiurl + "appid=" + wolframkey
+    url = apiurl + "appid=" + apikeys.wolframalpha
     url += "&input=" + urllib2.quote(msg)
     
     #get result
@@ -41,8 +41,3 @@ def parse(bot, user, channel, msg):
         bot.msg(channel, "%s: I didn't find what you were looking for" % user)
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
-
-
-#obtain the wolfram alpha key
-with open("../../wolframkey", 'r') as f:
-    wolframkey = f.read().strip()

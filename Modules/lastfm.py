@@ -8,10 +8,10 @@ from xml.dom.minidom import parseString
 
 import events
 import BotKit.util.irc as ircutil
+import apikeys
 
 
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&limit=1"
-lastfmkey=""
 dbfile="dbs/lastfm.db"
 command=":np"
 def parse(bot, user, channel, msg):
@@ -28,7 +28,7 @@ def parse(bot, user, channel, msg):
               bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
           else:
               #Curtosy of psycho
-              url = apiurl.replace('{USER}', fmuser).replace('{APIKEY}', lastfmkey)
+              url = apiurl.replace('{USER}', fmuser).replace('{APIKEY}', apikeys.lastfm)
               data = urllib2.urlopen(url).read()
               dom = parseString(data)
             
@@ -68,11 +68,6 @@ def parse(bot, user, channel, msg):
     cursor.close()
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
-
-#get api key
-with open('../../lastfmkey', 'r') as f:
-    lastfmkey = f.read().strip()
-              
 
 #create database 
 if not os.path.isfile(dbfile):
