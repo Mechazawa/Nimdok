@@ -22,7 +22,7 @@ def parse(bot, user, channel, msg):
                 bot.msg(channel, ircutil.Trunicate(meaning.replace("\n", " ") ,300))
             else:
                 bot.msg(channel, meaning.replace("\n", " "))
-            ircutil.SetMore("%s\n\n%s" (meaning, example[0].text.strip()))
+            ircutil.SetMore("%s\n\nExample:\n%s" % (meaning, examples[0].text.strip()))
 
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
