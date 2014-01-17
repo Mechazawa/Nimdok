@@ -1,3 +1,4 @@
 #Nimdok
 ----------
 
+Not backwards compattible!
