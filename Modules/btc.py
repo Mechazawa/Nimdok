@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
 import json
-import Util.irc as irc
+
+import events
+import BotKit.util.irc as irc
+
 
 command = ":btc"
 def parse(bot, user, channel, msg):

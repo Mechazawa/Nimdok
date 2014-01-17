@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import botlib
-import inspect
+import BotKit
 import events
-import modules
+import Modules
 import traceback
 import thread
 import random
@@ -13,7 +12,7 @@ import argparse
 
 wait = datetime.datetime.now()
 
-class callback(botlib.callback):
+class callback(BotKit.callback):
     def __init__(self):
         self.alive = True
         self.cmd = commands()
@@ -73,13 +72,13 @@ class callback(botlib.callback):
         bot.join(channel)
 
 #bot essential commands
-class commands(botlib.commands):
+class commands(BotKit.commands):
     def reload(self, bot, user, channel, args):
         print "Someone called reload"
         if self._ispriv(bot, user):
             events.clearEvents()
             try:
-              reload(modules)
+              reload(Modules)
               bot.msg(channel, "Reloaded all the modules")
             except Exception, e:
               print e
@@ -130,6 +129,6 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose', dest='verbose', help='enable verbose mode', action='store_true')
 
     args = parser.parse_args()
-    irc = botlib.connection(args.host, args.port, args.chan.split(','), args.nick, callback(), commands(), password=args.passw, verbose=args.verbose)
+    irc = BotKit.connection(args.host, args.port, args.chan.split(','), args.nick, callback(), commands(), password=args.passw, verbose=args.verbose)
     irc.go()
 

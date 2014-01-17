@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
+
 from bs4 import BeautifulSoup
-import Util.irc as ircutil
+
+import events
+import BotKit.util.irc as ircutil
+
 
 #apiurl = "https://shell-27.appspot.com/"
 apiurl = "http://py-ide-online.appspot.com/"

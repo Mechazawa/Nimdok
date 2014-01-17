@@ -3,7 +3,6 @@
 
 import urllib2
 import events
-import Util.net as netutil
 
 ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
 command = ":minify"

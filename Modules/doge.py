@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
+
 from bs4 import BeautifulSoup
-import Util.irc as irc
+
+import events
+import BotKit.util.irc as irc
+
 
 command = ":doge"
 def parse(bot, user, channel, msg):

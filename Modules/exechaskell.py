@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
 import json
-import Util.irc as ircutil
+
+import events
+import BotKit.util.irc as ircutil
+
 
 command = ":hs"
 apiurl = "http://tryhaskell.org/haskell.json?method=eval&expr="

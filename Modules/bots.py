@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 import events
-import Util.irc as irc
+import BotKit.util.irc as irc
 
 command = ".bots"
 def parse(bot, user, channel, msg):

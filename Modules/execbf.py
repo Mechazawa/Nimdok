@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
-import Util.irc as ircutil
+
+import events
+import BotKit.util.irc as ircutil
 
 
 command = ":bf"

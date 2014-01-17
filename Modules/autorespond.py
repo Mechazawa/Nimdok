@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import events
-import Util.irc as ircutil
+import BotKit.util.irc as ircutil
 
 responders = [
     {

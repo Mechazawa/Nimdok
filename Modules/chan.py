@@ -3,11 +3,14 @@
 
 import urllib2
 import json
-import events
 import re
-import Util.irc as irc
-import Util.net as netutil
+
 from bs4 import BeautifulSoup
+
+import events
+import BotKit.util.irc as irc
+import util.net as netutil
+
 
 apiurl = "https://a.4cdn.org/"
 def parse(bot, user, channel, msg):
@@ -20,7 +23,7 @@ def parse(bot, user, channel, msg):
                     jo = json.loads(urllib2.urlopen(apiurl + gr.group(0) + '.json').read())["posts"]
                     info = "%s - %s%s | %s %s" % (
                         irc.SetColor(gr.group(1), irc.Color.Green),
-                        irc.SetColor(("Anonymous" if not 'name' in jo[0] else netutil.unescape(jo[0]["name"])) ,irc.Color.Blue),
+                        irc.SetColor(("Anonymous" if not 'name' in jo[0] else netutil.unescape(jo[0]["name"])) , irc.Color.Blue),
                         irc.SetColor(("" if not 'trip' in jo[0] else jo[0]['trip']), irc.Color.Yellow),
                         irc.SetColor('r:'+str(len(jo)), irc.Color.Red),
                         irc.SetColor('i:'+str(jo[0]["images"]), irc.Color.Red)

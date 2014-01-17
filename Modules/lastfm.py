@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
 import urllib2
-import Util.irc as ircutil
 import sqlite3
 import os
 from xml.dom.minidom import parseString
+
+import events
+import BotKit.util.irc as ircutil
+
 
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&limit=1"
 lastfmkey=""

@@ -3,11 +3,13 @@
 
 import urllib2
 import json
-import events
-import Util.irc as irc
-import Util.net as netutil
-import Util.human as human
 from re import compile
+
+import events
+import util.irc as irc
+import util.net as netutil
+import BotKit.util.human as human
+
 
 #ytRegex = compile(r"""(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})""")
 ytRegex = compile(r"youtu.+\W([A-Za-z0-9\-_]{11})(\W|$)")

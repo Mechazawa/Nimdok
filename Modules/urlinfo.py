@@ -3,10 +3,10 @@
 
 import urllib2
 from bs4 import BeautifulSoup
+from BotKit import util as netutil
 import events
-import Util.net as netutil
-import Util.irc as ircutil
-import Util.human as humanutil
+import BotKit.util.irc as ircutil
+import BotKit.util.human as humanutil
 
 
 class HeadRequest(urllib2.Request):

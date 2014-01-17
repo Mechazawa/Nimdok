@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import events
-import Util.irc as ircutil
+import BotKit.util.irc as ircutil
 
 sources = {
         ":undress" : "Current code: http://nnmm.nl/viewcode.php " + ircutil.SetColor("HEAVY WIP!", ircutil.Color.Red),
