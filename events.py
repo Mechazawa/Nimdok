@@ -1,3 +1,5 @@
+#LEGACCY
+
 try: events
 except: events = {}
 

@@ -1,13 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from random import randrange
 import re
 from socket import AF_INET, SOCK_STREAM, socket
 from sqlite3 import connect
 import inspect
 import os
-
 
 class connection(object):
     def __init__(self, server, port, channels, nick, cb, commands, password="", commandprefix = ":", verbose=False):
@@ -18,6 +14,8 @@ class connection(object):
 
 
     def _lsend(self, s):
+        if self.verbose:
+            print s
         self.sock.send(s + '\r\n')
 
     def _lrecv(self):
@@ -28,8 +26,8 @@ class connection(object):
                 break
             s += c
         line = s.strip('\r\n')
-        if(self.verbose):
-            print(line)
+        if self.verbose:
+            print line
         return line
 
     def go(self):
@@ -43,17 +41,17 @@ class connection(object):
         # Wait for the 001 status reply.
         while 1:
             line = self._lrecv()
-            if(self.verbose):
+            if self.verbose:
                 print(line)
             if re.compile(':[^ ]+ 001 ').match(line):
                 break
             elif 'Nickname is already in use' in line:
                 # Change username if taken
-                realNick = realNick + '_'
+                realNick += '_'
                 self._lsend('NICK %s 0' % realNick)
             elif line == '':
                 return
-                raise 'ConnectError', (self.server, self.port, 'EOFBefore001')
+                raise Exception("Could not connect. Did not receive the 001 status reply.")
 
         #identify with the NICKSERV if needed
         if self.password != "" and realNick != self.nick:
@@ -82,46 +80,46 @@ class connection(object):
                 return
 
             elif line[:6] == 'PING :':
-                if(self.verbose): print(' PONG :' + line[6:])
+                if self.verbose:
+                    print(' PONG :' + line[6:])
                 self._lsend('PONG :' + line[6:])
                 continue
 
-            try:
-                gr = self.r.match(line)
-                if(gr.group(1) == self.nick):
-                    continue
-
-                elif(gr.group(3) == 'PRIVMSG' and '\001ACTION' in gr.group(5)):
-                    self.callback.action(self, gr.group(1), gr.group(4), gr.group(5)[8:][:-1])
-                elif(gr.group(3) == 'PRIVMSG'):
-                    if gr.group(5) == "\001VERSION\001":
-                        self.notice(gr.group(1), self.callback.version() or "SPBL-framework")
-                        continue
-                    if(gr.group(5)[:1] == self.commandprefix):
-                        for method in inspect.getmembers(self.commands, predicate=inspect.ismethod):
-                            cmd = method[0]
-                            func = method[1]
-                            if ((gr.group(5)+' ')[:(len(cmd)+2)] == self.commandprefix+cmd+' ' and cmd[:1] != "_"):
-                                func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
-                    self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
-                elif(gr.group(3) == 'PART'):
-                    self.callback.part(self, gr.group(1), gr.group(4), gr.group(5))
-                elif(gr.group(3) == 'JOIN'):
-                    self.callback.join(self, gr.group(1), gr.group(4))
-                elif(gr.group(3) == 'QUIT'):
-                    self.callback.quit(self, gr.group(1), gr.group(4), gr.group(5))
-                elif(gr.group(2) == 'NICK'):
-                    self.callback.nick(self, gr.group(1), gr.group(3))
-                elif(gr.group(3) == 'INVITE'):
-                    self.callback.invite(self, gr.group(1), gr.group(5))
-
-                self.callback.raw(self, line)
-            except:
-                pass
+#            try:
+#                gr = self.r.match(line)
+#                if gr.group(1) == self.nick:
+#                    continue
+#
+#                elif gr.group(3) == 'PRIVMSG' and '\001ACTION' in gr.group(5):
+#                    self.callback.action(self, gr.group(1), gr.group(4), gr.group(5)[8:][:-1])
+#                elif gr.group(3) == 'PRIVMSG':
+#                    if gr.group(5) == "\001VERSION\001":
+#                        self.notice(gr.group(1), self.callback.version() or "SPBL-framework")
+#                        continue
+#                    if gr.group(5)[:1] == self.commandprefix:
+#                        for method in inspect.getmembers(self.commands, predicate=inspect.ismethod):
+#                            cmd = method[0]
+#                            func = method[1]
+#                            if (gr.group(5)+' ')[:(len(cmd)+2)] == self.commandprefix+cmd+' ' and cmd[:1] != "_":
+#                                func(self, gr.group(1), gr.group(4), gr.group(5)[(len(cmd)+2):])
+#                    self.callback.msg(self, gr.group(1), gr.group(4), gr.group(5))
+#                elif gr.group(3) == 'PART':
+#                    self.callback.part(self, gr.group(1), gr.group(4), gr.group(5))
+#                elif gr.group(3) == 'JOIN':
+#                    self.callback.join(self, gr.group(1), gr.group(4))
+#                elif gr.group(3) == 'QUIT':
+#                    self.callback.quit(self, gr.group(1), gr.group(4), gr.group(5))
+#                elif gr.group(2) == 'NICK':
+#                    self.callback.nick(self, gr.group(1), gr.group(3))
+#                elif gr.group(3) == 'INVITE':
+#                    self.callback.invite(self, gr.group(1), gr.group(5))
+#
+#                self.callback.raw(self, line)
+#            except:
+#                pass
 
     # Server commands etc
     def msg(self, what, msg):
-        #msg = msg.encode("utf-8", "ignore")
         for line in str(msg).replace('\r', '').split('\n'):
             self._lsend('PRIVMSG %s :%s' % (what, line))
 
@@ -183,48 +181,10 @@ class connection(object):
     def getNick(self):
         return self.nick
 
-
-
-class callback(object):
-    def msg(self, bot, user, channel, msg):
-        #print user+" in "+channel+": "+msg
+    #Decorators
+    def command(self, name, **kwargs):
         pass
 
-    def action(self, bot, user, channel, action):
-        #print user+" in "+channel+" did "+action
-        pass
-
-    def join(self, bot, user, channel):
-        #print user+" joined "+channel
-        pass
-
-    def version():
-        return "SPBL-framework"
-
-    def quit(self, bot, user, channel, message):
-        #print user+" joined "+channel
-        pass
-
-    def part(self, bot, user, channel, reason):
-        #print user+" left "+channel+": "+reason
-        pass
-
-    def nick(self, bot, oldnick, newnick):
-        #print oldnick+" is now know as "+newnick
-        pass
-
-    def invite(self, bot, user, channel):
-        pass
-
-    def raw(self, bot, data):
-        #print data
-        pass
+    def callback(self, hook):
 
 
-class commands(object):
-    def _parseArgs(self, args, parseInt=True):
-        c = compile(r"""("[^"]*")|([^\s]+)""").findall(args)
-        if parseInt:
-            return [int(row[1]) if row[1].replace('-','').isdigit() else row[1] for row in c]
-        else:
-            return c
