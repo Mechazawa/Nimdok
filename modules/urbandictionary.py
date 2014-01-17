@@ -15,12 +15,14 @@ def parse(bot, user, channel, msg):
             bot.msg(channel, "%s: That word is not defined" % user)
         else:
             soup = BeautifulSoup(resp)
-            meaning = [x for x in [i for i in soup.findAll("div") if i.get("id") and "entry_" in i.get("id")][0].findAll("div") if x.get('class') and x.get('class') == ['definition']][0].text.replace("\n", " ")
+            definitions = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['definition']]
+            examples = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['example']]
+            meaning = definitions[0].text.replace('\r', '').strip()
             if len(meaning) > 300:
-                bot.msg(channel, ircutil.Trunicate(meaning ,300))
-                ircutil.SetMore(meaning)
+                bot.msg(channel, ircutil.Trunicate(meaning.replace("\n", " ") ,300))
             else:
-                bot.msg(channel, meaning)
+                bot.msg(channel, meaning.replace("\n", " "))
+            ircutil.SetMore("%s\n\n%s" (meaning, example[0].text.strip()))
 
 
 events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
