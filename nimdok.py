@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import BotKit
+from BotKit import botkit
 import events
 import Modules
 import traceback
@@ -12,7 +12,7 @@ import argparse
 
 wait = datetime.datetime.now()
 
-class callback(BotKit.callback):
+class callback(botkit.callback):
     def __init__(self):
         self.alive = True
         self.cmd = commands()
@@ -50,7 +50,7 @@ class callback(BotKit.callback):
         for c in events.getEvents('action'):
             try:
                 #c(bot, user, channel, msg)
-                thread.start_new(c, (bot, user, channel, msg,))
+                thread.start_new(c, (bot, user, channel, action,))
             except Exception, e:
                 print e
                 print traceback.format_exc()
@@ -72,7 +72,7 @@ class callback(BotKit.callback):
         bot.join(channel)
 
 #bot essential commands
-class commands(BotKit.commands):
+class commands(botkit.commands):
     def reload(self, bot, user, channel, args):
         print "Someone called reload"
         if self._ispriv(bot, user):
@@ -129,6 +129,6 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose', dest='verbose', help='enable verbose mode', action='store_true')
 
     args = parser.parse_args()
-    irc = BotKit.connection(args.host, args.port, args.chan.split(','), args.nick, callback(), commands(), password=args.passw, verbose=args.verbose)
+    irc = botkit.connection(args.host, args.port, args.chan.split(','), args.nick, callback(), commands(), password=args.passw, verbose=args.verbose)
     irc.go()
 
