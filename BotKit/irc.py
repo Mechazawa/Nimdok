@@ -197,7 +197,7 @@ class BotKit(object):
         self._lsend('JOIN ' + channel.replace('\n', ''))
 
     def part(self, channel, reason=" "):
-        self.logger.info("Parting from channel #%s: %s"% (channel, str(reason.replace('\n', ''))))
+        self.logger.info("Parting from channel %s: %s"% (channel, str(reason.replace('\n', ''))))
         self._lsend('PART %s :%s' % (channel, str(reason.replace('\n', ''))))
 
     def quit(self, reason="Bot shutting down"):
