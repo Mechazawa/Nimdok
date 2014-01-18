@@ -114,7 +114,7 @@ class BotKit(object):
                     args = line.trailing[2+len(cmd):-1]
                     self._callback(cmd, user, args)
                 else:
-                    self._callback('msg', user, channel, line.trailing)
+                    self._callback('msg', channel, user, line.trailing)
                     if line.trailing[0] == self._prefix:
                         cmd = line.trailing[1:].split()[0]
                         self._command(cmd, channel, user, line.trailing[2+len(cmd):])
