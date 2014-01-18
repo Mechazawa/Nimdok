@@ -30,6 +30,7 @@ class BotKit(object):
         if type(self._channels) == str:
             self._channels = self._channels.split(',')
         self._verbose = kwargs.get('verbose', False)
+        self._debug = kwargs.get('debug', False)
         self._prefix = kwargs.get('prefix', ':')
         self._blocking = kwargs.get('blocking', False)
         self._serverinfo = {}
@@ -100,25 +101,46 @@ class BotKit(object):
         while True:
             line = self.receive()
             for c in getcallback(line.command, True):
-                self._invoke(c, self, line)
+                self._callback(c, line)
 
             if line.command == "PRIVMSG":
-                self._invoke('msg', self, line.prefix.split('!')[0], line.arguments, line.trailing)
+                user = line.prefix.split('!')[0]
+                channel = line.arguments
+                if channel == self._nickname:
+                    channel = user
+                if line.trailing[-1] == "\001" and line.trailing[0] == "\001":
+                    cmd = line.trailing[1:-1].split()[0].lower()
+                    args = line.trailing[2+len(cmd):-1]
+                    self._callback(cmd, user, args)
+                else:
+                    self._callback('msg', user, channel, line.trailing)
+                    if line.trailing[0] == self._prefix:
+                        cmd = line.trailing[1:].split()[0]
+                        self._command(cmd, channel, user, line.trailing[2+len(cmd):])
 
+
+    ######
+    # Private methods
+    ######
     def _invoke(self, method, *args):
         try:
             if self._blocking is True:
                 method(*args)
             else:
                 thread.start_new(method, args)
-
         except Exception, e:
-            print e
-            print traceback.format_exc()
+            self.logger.error("Exception occured during invoke: %s" % e)
+            if self._debug is True:
+                print e
+                print traceback.format_exc()
 
     def _callback(self, type, *args):
         for c in getcallback(type):
             self._invoke(c, self, *args)
+
+    def _command(self, cmd, *args):
+        for c in getcommand(cmd):
+            self._invoke(c['method'], self, *args)
 
     def _lsend(self, s):
         if self._verbose:
