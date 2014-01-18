@@ -34,6 +34,7 @@ class BotKit(object):
         self._prefix = kwargs.get('prefix', ':')
         self._blocking = kwargs.get('blocking', False)
         self._serverinfo = {}
+        self._more = ""
 
     def run(self):
         #create the connection
@@ -239,3 +240,14 @@ class BotKit(object):
                 except:
                     pass
         return channels
+
+    #####
+    # usefull
+    #####
+    def SetMore(self, s):
+        self._more = s
+
+    def GetMore(self):
+        ret = self._more
+        more = ""
+        return ret

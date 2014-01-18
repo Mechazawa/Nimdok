@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-import events
-import urllib2
+from BotKit import handles
 from random import choice
 
 smileys = [
@@ -80,11 +79,10 @@ smileys = [
     ,u"""\(◕ ◡ ◕\)""" ,u"""^̮^""" ,u"""^ㅂ^""" ,u"""_(͡๏̯͡๏)_""" 
     ,u"""{´◕ ◡ ◕｀}""" ,u"""{ಠ_ಠ}__,,|,""" ,u"""{◕ ◡ ◕}"""
 ]
+
+@handles('msg')
 def parse(bot, user, channel, msg):
     if msg.lower().strip() == "smile":
         #smiley = urllib2.urlopen("http://dominick.p.elu.so/fun/kaomoji/get.php").read()
         try: bot.msg(channel, choice(smileys).encode("utf-8", "ignore"))
         except: bot.msg(channel, "My jaw hurts")
-
-
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)

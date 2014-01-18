@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-import events
+from BotKit import command
 from random import randrange as rand
 
 replacements = {
@@ -14,21 +14,15 @@ replacements = {
   " ": "_", "'": "*"
 }
 
-command = ":leet"
-def parse(bot, user, channel, msg):
-    if msg.lower()[:len(command)+1].rstrip() == command:
-      msg = msg[len(command)+1:].strip()
-      if len(msg) == 0:
-          bot.msg(channel, "Usage: :leet [text]")
-      else:
-          msg = msg.lower()
-          #make it l337
-          for r in replacements:
-              msg = msg.replace(r, replacements[r])
-          #random capitals!
-          msg = ''.join([c.upper() if rand(3) == 1 else c for c in msg])
-          bot.msg(channel, msg)
-
-      
-
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
+@command("leet")
+def parse(bot, user, channel, arg):
+    if len(arg) == 0:
+        bot.msg(channel, "Usage: :leet [text]")
+    else:
+        msg = arg.lower()
+        #make it l337
+        for r in replacements:
+            msg = msg.replace(r, replacements[r])
+        #random capitals!
+        msg = ''.join([c.upper() if rand(3) == 1 else c for c in msg])
+        bot.msg(channel, msg)

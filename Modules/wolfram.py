@@ -2,18 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import urllib2
-
 import lxml.etree as et
-
-import events
-import BotKit.util.irc as ircutil
+from BotKit import command, stylize
 import apikeys
 
 
 apiurl="http://api.wolframalpha.com/v2/query?"
 #set params
 apiurl+="units=metric&location=Amsterdam&reinterpret=true&format=plaintext&excludepodid=Input&"
-command=":wa"
+@command("wa")
 def parse(bot, user, channel, msg):
   if msg.lower()[:len(command)+1].rstrip() == command:
     msg = msg[len(command)+1:]
@@ -32,12 +29,10 @@ def parse(bot, user, channel, msg):
     elif tree.get('numpods') > 0:
       result = tree.find('pod').find('subpod').find('plaintext').text
       result = result.encode('UTF-8', 'ignore') #fucking unicode
-      bot.msg(channel, "%s: %s" % (user, ircutil.Trunicate(result.split('\n')[0] ,300)))
+      bot.msg(channel, "%s: %s" % (user, stylize.Trunicate(result.split('\n')[0] ,300)))
       if len(result) > 300 or '\n' in result:
-          ircutil.SetMore(result)
+          bot.SetMore(result)
     elif len(tree.findall('tips')) > 0:
         bot.msg(channel, "%s: %s" % (user, tree.find('tips').find('tip').get('text')))
     else:
         bot.msg(channel, "%s: I didn't find what you were looking for" % user)
-
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)

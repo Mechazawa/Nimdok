@@ -5,18 +5,14 @@ import urllib2
 import sqlite3
 import os
 from xml.dom.minidom import parseString
-
-import events
-import BotKit.util.irc as ircutil
+from BotKit import stylize, command
 import apikeys
 
 
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&limit=1"
 dbfile="dbs/lastfm.db"
-command=":np"
+@command("np")
 def parse(bot, user, channel, msg):
-  if msg.lower()[:len(command)+1].rstrip() == command:
-    msg = msg[len(command)+1:].strip()
     s = msg.split()
     database = sqlite3.connect(dbfile)
     cursor = database.cursor()
@@ -31,13 +27,13 @@ def parse(bot, user, channel, msg):
               url = apiurl.replace('{USER}', fmuser).replace('{APIKEY}', apikeys.lastfm)
               data = urllib2.urlopen(url).read()
               dom = parseString(data)
-            
+
               artistxml = dom.getElementsByTagName('artist')[0].toxml()
               trackxml = dom.getElementsByTagName('name')[0].toxml()
 
               artist = artistxml.rsplit('>')[1].replace('</artist','').strip().replace('\n', '')
               track = trackxml.rsplit('>')[1].replace('</name','').strip().replace('\n', '')
-              
+
               state = "last heard"
               try:
                   data.index('nowplaying')
@@ -46,9 +42,9 @@ def parse(bot, user, channel, msg):
               else:
                   state = "is now playing"
               bot.msg(channel, "%s %s %s - %s" % (
-                  ircutil.Bold(user), state,
-                  ircutil.Bold(ircutil.Trunicate(artist, 100)), 
-                  ircutil.Bold(ircutil.Trunicate(track, 100))
+                  stylize.Bold(user), state,
+                  stylize.Bold(stylize.Trunicate(artist, 100)),
+                  stylize.Bold(stylize.Trunicate(track, 100))
               ))
     elif s[0].lower() == "register":
         if len(s) != 2:
@@ -67,13 +63,11 @@ def parse(bot, user, channel, msg):
                 bot.msg(channel, "No user found with the nickname \"%s\"" % nick)
     cursor.close()
 
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
-
 #create database 
 if not os.path.isfile(dbfile):
     tmpcon = sqlite3.connect(dbfile)
     cur = tmpcon.cursor()
-    c.execute("CREATE TABLE lastfm(id INTEGER PRIMARY KEY, nick VARCHAR, lastfm VARCHAR);")
+    cur.execute("CREATE TABLE lastfm(id INTEGER PRIMARY KEY, nick VARCHAR, lastfm VARCHAR);")
     tmpcon.commit()
-    c.close()
+    cur.close()
 

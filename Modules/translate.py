@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-import events
+from BotKit import command
 import urllib2
 import urllib
 import json
@@ -78,46 +78,47 @@ langmap = {
 }
 encodeChars = "$&+,/:;=?@ <>\"'%#{}|\\^~[]`\n\r\t"
 
-command = ":tr"
-def parse(bot, user, channel, msg):
-    if msg.lower()[:len(command)+1].rstrip() == command:
-        msg = msg[4:].decode('utf-8', 'ignore')
-        args = {"from" : "auto", "to" : "en"}
-        s = msg.split(' ')
-        for i in range(0,3,2):
-            if len(s) < i+1: continue
-            if s[i].lower() in ["from", "to"] and not "\"" in s[i+1] and not "'" in s[i+1]:
-                resp = language(s[i+1])
-                if not resp:
-                    bot.msg(channel, "I do not know how to translate %s %s" % (s[0], s[1]))
-                    return
-                args[s[i]] = language(s[i+1])
-        translateme = msg if len(msg.split(' ')) <= 2 else msg.split(' ', 0 if not s[0] in ["from", "to"] else 2 if len(s) > 2 and not s[2] in ["from", "to"] else 4)[-1]
-        if translateme.strip() == "":
-            bot.msg(channel, "Nothing to translate :/")
-            return
-        url = "https://translate.google.com/translate_a/t?"
-        #query = ''.join([("%"+hex(ord(c)).split('x')[1]) if c in encodeChars else c for c in translateme]) #FUCK unicode
-        query = urllib2.quote(translateme.encode('utf-8', 'ignore'))
-        url += urllib.urlencode({
-                "client": "a",
-                "ie": "UTF-8",
-                "oe": "UTF-8",
-                "sc": "1",
-                "sl": args['from'],
-                "tl": args['to'],
-                "uptl": args['to']
-            }) + "&q=" + query
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0')]
-        response = opener.open(url).read()
-        if len(response) == 0:
-            bot.msg(channel, "No response :<")
-        else:
-            jo = json.loads(response)["sentences"][0]
-            try: bot.msg(channel, jo["trans"].encode("utf-8", "ignore"))
-            except:  bot.msg(channel, jo["trans"])
-
+@command("tr")
+def parse(bot, user, channel, arg):
+    msg = arg[4:].decode('utf-8', 'ignore')
+    args = {"from": "auto", "to": "en"}
+    s = msg.split(' ')
+    for i in range(0, 3, 2):
+        if len(s) < i + 1: continue
+        if s[i].lower() in ["from", "to"] and not "\"" in s[i + 1] and not "'" in s[i + 1]:
+            resp = language(s[i + 1])
+            if not resp:
+                bot.msg(channel, "I do not know how to translate %s %s" % (s[0], s[1]))
+                return
+            args[s[i]] = language(s[i + 1])
+    translateme = msg if len(msg.split(' ')) <= 2 else \
+        msg.split(' ', 0 if not s[0] in ["from", "to"] else 2 if len(s) > 2 and not s[2] in ["from", "to"] else 4)[-1]
+    if translateme.strip() == "":
+        bot.msg(channel, "Nothing to translate :/")
+        return
+    url = "https://translate.google.com/translate_a/t?"
+    #query = ''.join([("%"+hex(ord(c)).split('x')[1]) if c in encodeChars else c for c in translateme]) #FUCK unicode
+    query = urllib2.quote(translateme.encode('utf-8', 'ignore'))
+    url += urllib.urlencode({
+        "client": "a",
+        "ie": "UTF-8",
+        "oe": "UTF-8",
+        "sc": "1",
+        "sl": args['from'],
+        "tl": args['to'],
+        "uptl": args['to']
+    }) + "&q=" + query
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0')]
+    response = opener.open(url).read()
+    if len(response) == 0:
+        bot.msg(channel, "No response :<")
+    else:
+        jo = json.loads(response)["sentences"][0]
+        try:
+            bot.msg(channel, jo["trans"].encode("utf-8", "ignore"))
+        except:
+            bot.msg(channel, jo["trans"])
 
 
 def language(lang):
@@ -125,5 +126,3 @@ def language(lang):
     if lang in langmap:
         return langmap[lang]
     return lang if len([1 for i in langmap if langmap[i] == lang]) > 0 else False
-
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)

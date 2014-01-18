@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import events
-import BotKit.util.irc as ircutil
+from BotKit import command, stylize
 
-sources = {
-        ":undress" : "Current code: http://nnmm.nl/viewcode.php " + ircutil.SetColor("HEAVY WIP!", ircutil.Color.Red),
-        ":git"     : "Git repo: https://github.com/Mechazawa/Nimdok (may be older then the current bot tho)"
-}
-def parse(bot, user, channel, msg):
-  for x in sources:
-    if msg.lower()[:len(x)+1].rstrip() == x:
-        bot.msg(channel, sources[x])
+@command("undress")
+def undress(bot, user, channel, msg):
+    bot.msg(channel, "Current code: http://nnmm.nl/viewcode.php " + stylize.SetColor("HEAVY WIP!", stylize.Color.Red))
 
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
+@command("git")
+def git(bot, use, channel, msg):
+    bot.msg(channel,"Git repo: https://github.com/Mechazawa/Nimdok (may be older then the current bot tho)")

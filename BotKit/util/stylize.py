@@ -31,14 +31,3 @@ def Underline(s):
 
 def Trunicate(s, l=30, append="..."):
     return s[:l].rsplit(' ', 1)[0]+append if len(s) > l else s
-
-more = ""
-def SetMore(s):
-    global more
-    more = s
-
-def GetMore():
-    global more
-    ret = more
-    more = ""
-    return ret

@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import events
 import os
-from datetime import datetime, time
+from datetime import datetime
+from BotKit import handles
 import random
 
 dbfile="dbs/shout.db"
+@handles('msg')
 def parse(bot, user, channel, msg):
     if msg[0] == ":":
         return #Not even worth doing anything after this if we know someone executed a command
@@ -37,5 +38,5 @@ if not os.path.isfile(dbfile):
         tmpcon.commit()
         c.close()
 
+global lastShout
 lastShout = datetime.now()
-events.setEvent('msg', __file__[:-3].split('/')[-1].strip('.'), parse)
