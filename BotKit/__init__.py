@@ -4,4 +4,4 @@ __version__ = "2.0-dev"
 
 from .irc import BotKit
 from .log import ColoredLogger
-from .decorators import command, handles, cctp
+from .decorators import command, handles

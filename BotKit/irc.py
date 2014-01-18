@@ -4,6 +4,8 @@ import re
 import ssl
 import socket
 from .log import ColoredLogger
+from .structs import *
+from .decorators import getcallback, getcommand
 
 class BotKit(object):
     def __init__(self, **kwargs):
@@ -91,8 +93,12 @@ class BotKit(object):
         if len(self._channels) > 0:
             self.join(self._channels)
 
+        #main loop
         while True:
             line = self.receive()
+            if line.command == "PRIVMSG":
+                for c in getcallback('msg'):
+                    c['method'](self, line.prefix.split('!')[0], line.arguments, line.trailing)
 
 
     # Private methods
@@ -193,12 +199,3 @@ class BotKit(object):
                 except:
                     pass
         return channels
-
-class Message(object):
-    def __init__(self, line):
-        line = line.split(' :', 2)
-        split = line[0].split(' ', 3)
-        self.prefix = split[0]
-        self.command = split[1]
-        self.arguments = split[2] if len(split) >= 3 else False
-        self.trailing = line[1] if len(line) == 2 else False

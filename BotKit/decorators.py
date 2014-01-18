@@ -6,18 +6,26 @@ def command(name, restricted=False):
     global _commands
     def decorator(f):
         _commands.append({
-            "command": name,
+            "command": name.lower(),
             "method": f,
             "restricted": restricted
         })
     return decorator
 
-def handles(type, cctp=False):
+def handles(type, raw=False):
     global _callbacks
     def decorator(f):
         _callbacks.append({
             "type": type,
-            "cctp": cctp,
-            "method": f
+            "method": f,
+            "raw": raw
         })
-    pass
+    return decorator
+
+def getcommand(name):
+    global _commands
+    return [c for c in _commands if c['command'] == name.lower()]
+
+def getcallback(name, raw=False):
+    global _callbacks
+    return [c for c in _callbacks if c['type'] == name.lower() and c['raw'] == raw]
