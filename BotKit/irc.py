@@ -118,6 +118,9 @@ class BotKit(object):
                     if line.trailing[0] == self._prefix:
                         cmd = line.trailing[1:].split()[0]
                         self._command(cmd, channel, user, line.trailing[2+len(cmd):])
+            elif line.command == 'INVITE':
+                arg = line.arguments.split()
+                self._callback('msg', arg[0], line.prefix.split('!')[0], arg[1][1:])
 
 
     ######
@@ -162,7 +165,7 @@ class BotKit(object):
 
     def receive(self):
         line = self._lrecv()[1:]
-        if line[6:] == "PING :":
+        if line[:6] == "PING :":
             self._lsend('PONG :%s' % line[6:])
             return self.receive()
         return Message(line)
@@ -188,14 +191,17 @@ class BotKit(object):
         self._lsend('PRIVMSG %s :\001ACTION %s\001' % (what, str(msg)))
 
     def join(self, channel):
+        self.logger.info("Joining #" + ', #'.join(channel))
         if type(channel) == list:
             channel = ','.join(channel)
         self._lsend('JOIN ' + channel.replace('\n', ''))
 
     def part(self, channel, reason=" "):
+        self.logger.info("Parting from channel #%s: %s"% (channel, str(reason.replace('\n', ''))))
         self._lsend('PART %s :%s' % (channel, str(reason.replace('\n', ''))))
 
     def quit(self, reason="Bot shutting down"):
+        self.logger.info("Shutting down: " + reason)
         self._lsend('QUIT :' + str(reason.replace('\n', '')))
         self.running = False
 
