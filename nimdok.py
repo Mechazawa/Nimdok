@@ -13,7 +13,7 @@ irc = BotKit(
     nickname= "Nimdok",
     nickpass=apikeys.botpass,
 
-    channels= ["#/g/Spam"],
+    channels= ["#/g/SICP", "#/g/Spam", "#/g/Summer"],
     debug= True
 )
 
