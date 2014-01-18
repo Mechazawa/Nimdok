@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 from BotKit import *
-import BotKit.util.stylize as irc
 
 command = ".bots"
 
