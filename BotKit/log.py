@@ -40,10 +40,13 @@ class ColoredFormatter(logging.Formatter):
 class ColoredLogger(logging.Logger):
     FORMAT = "[$BOLD%(name)-5s$RESET][%(levelname)-5s]  %(message)s"
     COLOR_FORMAT = formatter_message(FORMAT, True)
-    def __init__(self, name):
+    def __init__(self, name, filename=False):
         logging.Logger.__init__(self, name, logging.DEBUG)
 
         color_formatter = ColoredFormatter(self.COLOR_FORMAT)
+
+        if filename is not False:
+            logging.basicConfig(filename=filename)
 
         console = logging.StreamHandler()
         console.setFormatter(color_formatter)
