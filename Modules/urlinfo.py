@@ -29,8 +29,6 @@ def parse(bot, channel, user, msg):
                 bot.msg(channel, stylize.Trunicate(txt))
             else:
                 size = int(urllib2.urlopen(m).info().getheaders("Content-Length")[0])
-                bot.msg(channel, "%s | %s" % (mimetype, humanize.sizefmt(size)))
-            stylize.Tr
 
 def getdomain(s, nosub=False):
     domain = s.split('/')[2].split('?')[0]
