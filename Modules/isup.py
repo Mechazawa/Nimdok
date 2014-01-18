@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from BotKit import command
 
 @command("isup")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     if len(arg) == 0:
         bot.msg(channel, "%s: Usage, :isup [url]" % user)
     else:

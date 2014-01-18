@@ -6,7 +6,7 @@ import BotKit.util.stylize as irc
 command = ".bots"
 
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
     if msg.lower()[:len(command)+1].rstrip() == command:
         bot.msg(channel, 
                 "Reporting in! " + 

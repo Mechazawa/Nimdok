@@ -81,7 +81,7 @@ smileys = [
 ]
 
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
     if msg.lower().strip() == "smile":
         #smiley = urllib2.urlopen("http://dominick.p.elu.so/fun/kaomoji/get.php").read()
         try: bot.msg(channel, choice(smileys).encode("utf-8", "ignore"))

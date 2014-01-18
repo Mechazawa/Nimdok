@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from BotKit import command, stylize
 
 @command("ud")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     resp = urllib2.urlopen("http://www.urbandictionary.com/define.php?term=" + urllib2.quote(arg)).read()
     if "isn't defined." in resp:
         bot.msg(channel, "%s: That word is not defined" % user)

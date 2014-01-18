@@ -15,7 +15,7 @@ replacements = {
 }
 
 @command("leet")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     if len(arg) == 0:
         bot.msg(channel, "Usage: :leet [text]")
     else:

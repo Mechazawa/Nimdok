@@ -12,7 +12,7 @@ from BotKit import handles, stylize, humanize
 ytRegex = compile(r"youtu.+\W([A-Za-z0-9\-_]{11})(\W|$)")
 apiurl = "https://gdata.youtube.com/feeds/api/videos/{VID}?alt=json&v=2"
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
     for m in msg.split(' '):
         if m[:4] == "http" and '//' in m[5:-len(m)+8]:
             if 'youtube.' in getdomain(m) or 'youtu.be' in getdomain(m):

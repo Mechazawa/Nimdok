@@ -8,7 +8,7 @@ from BotKit import command, stylize
 
 apiurl = "http://tryhaskell.org/haskell.json?method=eval&expr="
 @command("hs")
-def parse(bot, user, channel, args):
+def parse(bot, channel, user, args):
     resp = json.loads(urllib2.urlopen(apiurl + urllib2.quote(args)).read())
     message = ""
     if 'error' in resp:

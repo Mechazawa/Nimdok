@@ -10,7 +10,7 @@ from BotKit import command, stylize
 apiurl = "http://py-ide-online.appspot.com/"
 pykey  = "" 
 @command("py")
-def parse(bot, user, channel, args):
+def parse(bot, channel, user, args):
     global pykey
     if pykey == "":
         pykey = pysession()

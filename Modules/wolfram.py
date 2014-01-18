@@ -11,7 +11,7 @@ apiurl="http://api.wolframalpha.com/v2/query?"
 #set params
 apiurl+="units=metric&location=Amsterdam&reinterpret=true&format=plaintext&excludepodid=Input&"
 @command("wa")
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
   if msg.lower()[:len(command)+1].rstrip() == command:
     msg = msg[len(command)+1:]
     

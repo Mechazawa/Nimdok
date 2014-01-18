@@ -9,7 +9,7 @@ import random
 
 dbfile="dbs/shout.db"
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
     if msg[0] == ":":
         return #Not even worth doing anything after this if we know someone executed a command
     global lastShout

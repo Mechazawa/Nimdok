@@ -1,7 +1,7 @@
 from BotKit import handles
 
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
 	usr = user
 	msg = msg.strip()
 	s = msg.split(':',2)

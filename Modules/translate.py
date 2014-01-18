@@ -79,7 +79,7 @@ langmap = {
 encodeChars = "$&+,/:;=?@ <>\"'%#{}|\\^~[]`\n\r\t"
 
 @command("tr")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     msg = arg[4:].decode('utf-8', 'ignore')
     args = {"from": "auto", "to": "en"}
     s = msg.split(' ')

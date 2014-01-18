@@ -6,7 +6,7 @@ from BotKit import command
 
 
 @command("more")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     more = bot.GetMore()
     if more.strip():
         bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://nnmm.nl/", more).read()))

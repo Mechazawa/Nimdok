@@ -12,7 +12,7 @@ class HeadRequest(urllib2.Request):
 
 ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
 @handles('msg')
-def parse(bot, user, channel, msg):
+def parse(bot, channel, user, msg):
     for m in msg.split(' '):
         if m[:4] == "http" and '//' in m[5:-len(m)+8]:
             if getdomain(m, True) in ignoreddomains: continue

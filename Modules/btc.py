@@ -8,7 +8,7 @@ from BotKit import command, stylize
 
 
 @command("btc")
-def parse(bot, user, channel, args):
+def parse(bot,  channel, user, args):
     jo = json.loads(urllib2.urlopen("https://mtgox.com/api/1/BTCUSD/public/ticker").read())["return"]
     info = "%s %s, %s %s, %s %s, %s %s , %s %s" % (
         stylize.Bold("Last:"), jo["last"]["display"],

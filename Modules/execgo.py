@@ -8,7 +8,7 @@ from BotKit import command, stylize
 
 apiurl = "https://shell-27.appspot.com/shell.do?"
 @command(":go")
-def parse(bot, user, channel, arg):
+def parse(bot, channel, user, arg):
     args = arg.split("|", 2)
     main, imports = arg, ""
     if len(args) == 2:
