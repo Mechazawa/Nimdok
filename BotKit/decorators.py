@@ -28,4 +28,4 @@ def getcommand(name):
 
 def getcallback(name, raw=False):
     global _callbacks
-    return [c for c in _callbacks if c['type'] == name.lower() and c['raw'] == raw]
+    return [c['method'] for c in _callbacks if c['type'] == name.lower() and c['raw'] == raw]

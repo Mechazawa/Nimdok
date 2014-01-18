@@ -3,9 +3,12 @@
 import re
 import ssl
 import socket
+import thread
+import traceback
 from .log import ColoredLogger
 from .structs import *
 from .decorators import getcallback, getcommand
+
 
 class BotKit(object):
     def __init__(self, **kwargs):
@@ -96,12 +99,27 @@ class BotKit(object):
         #main loop
         while True:
             line = self.receive()
+            for c in getcallback(line.command, True):
+                self._invoke(c, self, line)
+
             if line.command == "PRIVMSG":
-                for c in getcallback('msg'):
-                    c['method'](self, line.prefix.split('!')[0], line.arguments, line.trailing)
+                self._invoke('msg', self, line.prefix.split('!')[0], line.arguments, line.trailing)
 
+    def _invoke(self, method, *args):
+        try:
+            if self._blocking is True:
+                method(*args)
+            else:
+                thread.start_new(method, args)
 
-    # Private methods
+        except Exception, e:
+            print e
+            print traceback.format_exc()
+
+    def _callback(self, type, *args):
+        for c in getcallback(type):
+            self._invoke(c, self, *args)
+
     def _lsend(self, s):
         if self._verbose:
             print s
