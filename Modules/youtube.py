@@ -17,7 +17,7 @@ def parse(bot, channel, user, msg):
         if m[:4] == "http" and '//' in m[5:-len(m)+8]:
             if 'youtube.' in getdomain(m) or 'youtu.be' in getdomain(m):
                 vid = ytRegex.search(m).group(1)
-                bot.logger.ingo("Matched youtube id: %s" % vid)
+                bot.logger.info("Matched youtube id: %s" % vid)
                 jo = json.loads(urllib2.urlopen(apiurl.replace("{VID}", vid)).read())
                 data = {
                     "views" : int(jo["entry"]["yt$statistics"]["viewCount"]),
