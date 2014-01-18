@@ -1,3 +1,6 @@
+
+apikeys.py
+.idea
 *.db
 *.log
 
