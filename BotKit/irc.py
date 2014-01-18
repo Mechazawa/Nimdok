@@ -120,7 +120,7 @@ class BotKit(object):
                         self._command(cmd, channel, user, line.trailing[2+len(cmd):])
             elif line.command == 'INVITE':
                 arg = line.arguments.split()
-                self._callback('msg', arg[0], line.prefix.split('!')[0], arg[1][1:])
+                self._callback('invite', line.trailing, line.prefix.split('!')[0])
 
 
     ######
@@ -191,9 +191,9 @@ class BotKit(object):
         self._lsend('PRIVMSG %s :\001ACTION %s\001' % (what, str(msg)))
 
     def join(self, channel):
-        self.logger.info("Joining #" + ', #'.join(channel))
         if type(channel) == list:
             channel = ','.join(channel)
+        self.logger.info("Joining " + channel)
         self._lsend('JOIN ' + channel.replace('\n', ''))
 
     def part(self, channel, reason=" "):

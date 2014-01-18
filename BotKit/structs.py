@@ -4,8 +4,8 @@
 
 class Message(object):
     def __init__(self, line):
-        line = line.split(' :', 2)
-        split = line[0].split(' ', 3)
+        line = line.split(' :', 1)
+        split = line[0].split(' ', 2)
         self.prefix = split[0]
         self.command = split[1]
         self.arguments = split[2] if len(split) >= 3 else False

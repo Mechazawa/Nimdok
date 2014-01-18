@@ -10,8 +10,9 @@ irc = BotKit(
     nickname= "Nimdok",
     nickpass=apikeys.botpass,
 
-    channels= ["#/g/Spam"],
-    debug= True
+    channels= ["#/g/Spam", "#/g/SICP", "#/g/Summer"],
+    debug= True,
+    verbose=True
 )
 
 #general bot stuff
@@ -19,5 +20,9 @@ irc = BotKit(
 def invite(bot, channel, user):
     bot.logger.info("Invited to #%s" % channel)
     bot.join(channel)
+
+@handles('msg')
+def msg(bot, channel, user, msg):
+    bot.logger.info("%s %s: %s" % (channel, user, msg))
 
 irc.run()
