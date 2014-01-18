@@ -161,13 +161,14 @@ class BotKit(object):
         line = s.strip('\r\n')
         if self._verbose:
             print line
+
+        if line.split(':')[0] == "PING ":
+            self._lsend('PONG :%s' % line.split(':')[1])
+            return self._lrecv()
         return line
 
     def receive(self):
         line = self._lrecv()[1:]
-        if line[:6] == "PING :":
-            self._lsend('PONG :%s' % line[6:])
-            return self.receive()
         return Message(line)
 
 
