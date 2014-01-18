@@ -10,5 +10,5 @@ def parse(bot, channel, user, msg):
         bot.msg(channel, 
                 "Reporting in! " + 
                 irc.SetColor("[Python] ", irc.Color.Blue) + 
-                irc.SetColor("See " + irc.Bold("http://nnmm.nl/dumbot"), irc.Color.Cyan)
+                irc.SetColor("See " + irc.Bold("https://github.com/Mechazawa/Nimdok"), irc.Color.Cyan)
         )
