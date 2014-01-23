@@ -80,7 +80,7 @@ encodeChars = "$&+,/:;=?@ <>\"'%#{}|\\^~[]`\n\r\t"
 
 @command("tr")
 def parse(bot, channel, user, arg):
-    msg = msg.decode('utf-8', 'ignore')
+    msg = arg.decode('utf-8', 'ignore')
     args = {"from": "auto", "to": "en"}
     s = msg.split(' ')
     for i in range(0, 3, 2):
