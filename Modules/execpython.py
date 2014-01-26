@@ -32,6 +32,7 @@ def parse(bot, channel, user, args):
 
 @command("newkey")
 def newkey(bot, user, channel, args):
+    global pykey
     pykey = pysession()
     bot.msg(channel, "Got a new key: %s" % pykey)
 
