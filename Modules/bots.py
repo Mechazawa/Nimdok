@@ -2,11 +2,10 @@
 #!/usr/bin/python
 from BotKit import *
 
-command = ".bots"
 
 @handles('msg')
 def parse(bot, channel, user, msg):
-    if msg.lower()[:len(command)+1].rstrip() == command:
+    if msg.lower()[:6].rstrip() == ".bots":
         bot.msg(channel, 
                 "Reporting in! " + 
                 irc.SetColor("[Python] ", irc.Color.Blue) + 
