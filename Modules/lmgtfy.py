@@ -15,5 +15,5 @@ def parse(bot, channel, user, arg):
     if len(arg) == 0:
         bot.msg(channel, "Usage: :lmddgtfy [text]")
     else:
-        bot.msg(channel, user+": http://lmddgtfy.com/?q="+urllib2.quote(arg))
+        bot.msg(channel, user+": http://lmddgtfy.net/?q="+urllib2.quote(arg))
 
