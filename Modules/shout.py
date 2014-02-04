@@ -5,8 +5,9 @@
 import sqlite3
 import os
 from datetime import datetime
-from BotKit import handles
+from BotKit import handles, command
 import random
+import urllib2
 
 dbfile="dbs/shout.db"
 @handles('msg')
@@ -17,10 +18,10 @@ def parse(bot, channel, user, msg):
     if (datetime.now() - lastShout).seconds < random.randint(10,40) or user.lower() == "sicpbot": 
         return
     lastShout = datetime.now()
-    database = sqlite3.connect(dbfile)
     ret = ""
     if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower():
         return
+    database = sqlite3.connect(dbfile)
     c = database.cursor()
     shouts = []
     for row in c.execute("SELECT shout from shouts"):
@@ -38,6 +39,14 @@ if not os.path.isfile(dbfile):
         c.execute("CREATE TABLE shouts(id INTEGER PRIMARY KEY, nick VARCHAR, shout VARCHAR);")
         tmpcon.commit()
         c.close()
+
+@command('shouts')
+def listshouts(bot, channel, user, args):
+    database = sqlite3.connect(dbfile)
+    c = database.cursor()
+    url = urllib2.urlopen("http://nnmm.nl/", '\n'.join([row[0] for row in c.execute("SELECT shout from shouts")])).read()
+    bot.msg(channel, "%s: All of my shouts: %s"%(user, url))
+    
 
 global lastShout
 lastShout = datetime.now()
