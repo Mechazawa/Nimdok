@@ -3,14 +3,16 @@
 from BotKit import *
 import random
 
+filename = 'insults.in' # path to insults file. no idea whether i have to add '../insults.in' or not.
+insults = [ 'blows', 'is an ass', 'is broken', 'is crap', 'is shit', 'sucks' ]
+
 @handles('msg')
 def parse(bot, channel, user, msg):
     if msg.lower().strip().split(' ')[0] == 'nimdok' and msg.lower().replace('nimdok', '').strip() in insults:
-        insults = [ 'blows', 'is an ass', 'is broken', 'is crap', 'is shit', 'sucks' ]
-        replies = open('insults.in', 'r')
-        bot.msg(channel, user+': '+random.choice(replies.readlines()).strip()) 
+        replies = open(filename, 'r')
+        bot.msg(channel, user+': '+random.choice(replies.readlines()).strip())
 
 @command('insult')
 def parse(bot, channel, user, msg):
-    replies = open('insults.in', 'w')
+    replies = open(filename, 'w')
     replies.write(msg + '\n')
