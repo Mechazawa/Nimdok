@@ -30,7 +30,7 @@ def parse(bot, channel, user, msg):
                 fmt = u"%s %s %s %s | %s views"
                 info = fmt % (
                         stylize.Bold(stylize.Trunicate(data["title"], 60)),
-                        ', '+data["author"],
+                        '| '+data["author"],
                         stylize.SetColor(u"↑" + humanize.intcomma(data["likes"]), stylize.Color.Green),
                         stylize.SetColor(u"↓" + humanize.intcomma(data["dislikes"]), stylize.Color.Red),
                         humanize.intcomma(data["views"]) if data["views"] < 1000000 else humanize.intword(data["views"])
