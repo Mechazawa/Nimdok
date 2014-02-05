@@ -3,7 +3,7 @@
 from BotKit import *
 import random
 
-filename = 'insults.in' # path to insults file. no idea whether i have to add '../insults.in' or not.
+filename = 'insults.in' 
 insults = [ 'blows', 'is an ass', 'is broken', 'is crap', 'is shit', 'sucks' ]
 
 @handles('msg')
@@ -16,3 +16,4 @@ def parse(bot, channel, user, msg):
 def parse(bot, channel, user, msg):
     replies = open(filename, 'w')
     replies.write(msg + '\n')
+    bot.msg(channel, 'Insult added.')
