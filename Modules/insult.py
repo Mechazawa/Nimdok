@@ -12,7 +12,7 @@ def parse(bot, channel, user, msg):
         replies = open(filename, 'r')
         bot.msg(channel, user+': '+random.choice(replies.readlines()).strip())
 
-@command('insult')
+@command('insult', True)
 def parse(bot, channel, user, msg):
     replies = open(filename, 'w')
     replies.write(msg + '\n')
