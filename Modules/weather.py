@@ -3,7 +3,11 @@
 from BotKit import *
 import urllib2
 from xml.dom.minidom import parseString
-#psycho
+
+@command('w')
+def redirect(*args):
+    parse(*args)
+
 @command('weather')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
