@@ -36,5 +36,5 @@ def parse(bot, channel, user, arg):
             bot.msg(channel, user + ': I couldn\'t find the location.')
 
 @command('w')
-def redirect(*args):
-    parse(*args)
+def redirect(bot, channel, user, arg):
+    parse(bot, channel, user, arg)
