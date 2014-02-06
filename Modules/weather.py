@@ -4,10 +4,6 @@ from BotKit import *
 import urllib2
 from xml.dom.minidom import parseString
 
-@command('w')
-def redirect(*args):
-    parse(*args)
-
 @command('weather')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
@@ -38,3 +34,7 @@ def parse(bot, channel, user, arg):
             bot.msg(channel, user + ': ' + location + ', ' + temp + 'C. Wind blows ' + wind.lower() + ', ' + humid + ' humidity.')
         else:
             bot.msg(channel, user + ': I couldn\'t find the location.')
+
+@command('w')
+def redirect(*args):
+    parse(*args)
