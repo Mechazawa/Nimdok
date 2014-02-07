@@ -3,7 +3,7 @@
 from BotKit import *
 import urllib2
 from xml.dom.minidom import parseString
-#psycho
+
 @command('weather')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
@@ -28,9 +28,34 @@ def parse(bot, channel, user, arg):
         humid = data.getElementsByTagName('relative_humidity')[0].toxml() \
                 .replace('<relative_humidity>','').replace('</relative_humidity>','')
         wind = data.getElementsByTagName('wind_string')[0].toxml() \
-                .replace('<wind_string>','').replace('</wind_string>','')
+                .replace('<wind_string>','').replace('</wind_string>','') \
+                .replace('F', 'f')
+
+        if '-' in temp:
+            tmp = float(temp[1:])
+            if tmp >= 0 and tmp < 3:
+                tempColor = stylize.Color.LCyan
+            elif tmp >= 3 and tmp < 8:
+                tempColor = stylize.Color.Cyan 
+            elif tmp >= 8 and tmp < 15:
+                tempColor = stylize.Color.LBlue 
+            elif tmp >= 15:
+                tempColor = stylize.Color.Blue 
+        else:
+            tmp = float(temp)
+            if tmp >= 3 and tmp < 10:
+                tempColor = stylize.Color.Green 
+            elif tmp >= 10 and tmp < 25:
+                tempColor = stylize.Color.Yellow 
+            elif tmp >= 25 and tmp < 35:
+                tempColor = stylize.Color.Orange 
+            elif tmp >= 35:
+                tempColor = stylize.Color.Red 
 
         if location != ', ':
-            bot.msg(channel, user + ': ' + location + ', ' + temp + 'C. Wind blows ' + wind.lower() + ', ' + humid + ' humidity.')
+            bot.msg(channel, user + ': ' + location + ', ' + 
+                            stylize.SetColor(temp + 'C', tempColor) + 
+                            '. Wind blows ' + 
+                            wind.strip() + ', ' + humid + ' humidity.')
         else:
             bot.msg(channel, user + ': I couldn\'t find the location.')
