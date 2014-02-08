@@ -54,12 +54,12 @@ def parse(bot, channel, user, arg):
                     tempColor = stylize.Color.Blue 
             else:
                 tmp = float(temp)
-                if tmp >= 0 and tmp < 3:
+                if tmp >= 0 and tmp < 10:
                     tempColor = stylize.Color.White
-                elif tmp >= 3 and tmp < 10:
-                    tempColor = stylize.Color.Green 
-                elif tmp >= 10 and tmp < 25:
+                elif tmp >= 10 and tmp < 16:
                     tempColor = stylize.Color.Yellow 
+                elif tmp >= 16 and tmp < 25:
+                    tempColor = stylize.Color.Green
                 elif tmp >= 25 and tmp < 35:
                     tempColor = stylize.Color.Orange 
                 elif tmp >= 35:
