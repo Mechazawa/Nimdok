@@ -10,4 +10,4 @@ def fork(bot, channel, user, arg):
 @handles("msg")
 def dongers(bot, channel, user, msg):
     if "donger" in msg.lower():
-        bot.msg(channel, u"ヽ༼ຈل͜ຈ༽ﾉ raise ur dongers ヽ༼ຈل͜ຈ༽ﾉ")
+        bot.msg(channel, u"ヽ༼ຈل͜ຈ༽ﾉ raise ur dongers ヽ༼ຈل͜ຈ༽ﾉ".encode("utf-8", "ignore"))
