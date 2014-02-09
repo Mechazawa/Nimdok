@@ -5,14 +5,14 @@ A bot based on BotKit. Currently running on a couple of channels on rizon.
 
 Commands and triggers
 ======
-| Module  | Type    | Command/trigger  | Description                           | admin | Example         |
+| Module  | Type    | What             | Description                           | admin | Example         |
 | --------|---------|------------------|---------------------------------------|-------|-------------------|
 | admin   | Command | addadmin         | Adds a user to the admin group        | Yes   | :addadmin shodan  |
 | admin   | Command | admins           | Lists all the admins                  | No    | :admins           |
 | admin   | Command | remadmin         | Removes a user from the admin group   | Yes   | :remadmin shodan  |
 | bots    | Trigger | .bots            | Shows basic bot info                  | No    | .bots             |
 | btc     | Command | btc              | Shows the current value of bitcoin    | No    | :btc              |
-| chan    | Trigger | 4chan thread url | Shows 4chan thread statistics         | No    | \*4chan thread\*  |
+| chan    | Trigger | thread url       | Shows 4chan thread statistics         | No    | \*4chan thread\*  |
 | chatlog | Trigger | message          | Writes all messages to chat.log       | No    | Any message       |
 | control | Command | part             | Makes the bot part from a channel     | Yes   | :part #/g/sicp    |
 | doge    | Command | doge             | Shows the current value of dogecoin   | No    | :doge             |
@@ -34,7 +34,7 @@ Commands and triggers
 | ping    | Command | ping             | replies with pong                     | No    | :ping             |
 | redirect| Trigger | message          | Redirects to a 4chan board on >>>/ASD/| No    | >>>/g/            |
 | say     | Command | say              | Put words in the bot's mouth          | No    | :say hello world  |
-| shout   | Tigger  | all caps message | Shouts something random               | No    | HELLO WORLD       |
+| shout   | Tigger  | message          | Shouts something random               | No    | HELLO WORLD       |
 | smile   | Trigger | message          | Prints a random smiley                | No    | smile             |
 | translate| Command| tr               | Translates text                       | No    | :tr {from auto} {to english} hello world |
 | undress | Command | undress          | Prints a link to the current source   | No    | :undress          |
