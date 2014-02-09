@@ -14,7 +14,7 @@ Commands and triggers
 | btc     | Command | btc              | Shows the current value of bitcoin    | No  | :btc              |
 | chan    | Trigger | 4chan thread url | Shows 4chan thread statistics         | No  | \*4chan thread\*  |
 | chatlog | Trigger | message          | Writes all messages to chat.log       | No  | Any message       |
-| control | Command | part             | Makes the port part from a channel    | Yes | :part #/g/sicp    |
+| control | Command | part             | Makes the bot part from a channel     | Yes | :part #/g/sicp    |
 | doge    | Command | doge             | Shows the current value of dogecoin   | No  | :doge             |
 | execgo  | Command | go               | Executes GoLang code, shows the result| No  | :go fmt : fmt.Println ("Hello, 世界") |
 | execpython | Command | py            | Executes Python code, shows the result| No  | :py print "hi"    |
