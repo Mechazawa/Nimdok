@@ -18,8 +18,13 @@ def parse(bot, channel, user, msg):
                 continue
             try: 
                 head = urllib2.urlopen(HeadRequest(m))
-            except Exception, e: 
-                bot.msg(channel, e)
+            except: 
+                try:
+                    source = urllib2.urlopen(m).read().replace('\r','').replace('\n','')
+                except Exception, e:
+                    bot.msg(channel, e)
+                else:
+                    bot.msg(channel, stylize.Trunicate(source))
             else:
                 head.read()
                 mimetype = head.headers.type
