@@ -12,7 +12,7 @@ def parse(bot, channel, user, arg):
         bot.msg(channel, "%s: That word is not defined" % user)
     else:
         soup = BeautifulSoup(resp)
-        definitions = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['definition']]
+        definitions = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['meaning']]
         examples = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['example']]
         meaning = definitions[0].text.replace('\r', '').strip()
         if len(meaning) > 300:
