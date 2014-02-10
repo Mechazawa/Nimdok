@@ -18,8 +18,3 @@ def parse(bot, channel, user, msg):
     if 'y/n' in msg.split():
         bot.msg(channel, user + ': ' + random.choice(answers) + '.')
 
-@handles('msg')
-def parse(bot, channel, user, msg):
-    if ' or ' in msg:
-        answers = msg.replace('?', '').split(' or ')
-        bot.msg(channel, user + ': ' + random.choice(answers).strip() + '.')
