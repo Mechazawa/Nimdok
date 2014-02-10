@@ -19,4 +19,4 @@ def parse(bot, channel, user, arg):
             bot.msg(channel, stylize.Trunicate(meaning.replace("\n", " ") ,300))
         else:
             bot.msg(channel, meaning.replace("\n", " "))
-        bot.SetMore("%s\n%s %s" % (meaning,stylize.Bold("Example:") ,examples[0].text.strip()))
+        bot.SetMore("%s %s" % (stylize.Bold("Example:") ,examples[0].text.strip()))
