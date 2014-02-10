@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 import urllib2
-from bs4 import BeautifulSoup
 from BotKit import command, stylize
 
 @command("ud")
 def parse(bot, channel, user, arg):
-    resp = urllib2.urlopen("http://www.urbandictionary.com/define.php?term=" + urllib2.quote(arg)).read()
-    if "isn't defined." in resp:
-        bot.msg(channel, "%s: That word is not defined" % user)
+    apiurl = 'http://api.urbandictionary.com/v0/define?term=' + urllib2.quote(arg)
+    data = json.load(urllib2.urlopen(apiurl))
+    if len(arg) == 0:
+        bot.msg(channel, 'Usage, :ud <word>')
     else:
-        soup = BeautifulSoup(resp)
-        definitions = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['definition']]
-        examples = [x for x in soup.findAll("div") if x.get('class') and x.get('class') == ['example']]
-        meaning = definitions[0].text.replace('\r', '').strip()
-        if len(meaning) > 300:
-            bot.msg(channel, stylize.Trunicate(meaning.replace("\n", " ") ,300))
+        if 'no_results' in urllib2.urlopen(apiurl).read():
+            bot.msg(channel, user + ': That word is not defined.')
         else:
-            bot.msg(channel, meaning.replace("\n", " "))
-        stylize.SetMore("%s\n\nExample:\n%s" % (meaning, examples[0].text.strip()))
+            bot.msg(channel, user + ': ' + data['list'][0]['definition'])
