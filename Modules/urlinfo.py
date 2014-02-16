@@ -31,7 +31,7 @@ def parse(bot, channel, user, msg):
                 if "html" in mimetype.lower():
                     source = urllib2.urlopen(m)
                     BS = BeautifulSoup(source)
-                    bot.msg(channel, BS.find('title').text.replace('\r','').replace('\n','').encode('utf-8'))
+                    bot.msg(channel, BS.find('title').text.replace('\r','').replace('\n','').strip().encode('utf-8'))
                 elif "text" in mimetype.lower():
                     txt = urllib2.urlopen(m).read().replace("\n", " ").replace("\r", "")
                     bot.msg(channel, stylize.Trunicate(txt))
