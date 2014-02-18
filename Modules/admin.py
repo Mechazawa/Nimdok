@@ -10,10 +10,6 @@ def parse(bot, channel, user, args):
         bot.msg(channel, "%s: I added %s to the admin group" % (user, usr))
 
 
-@command('admins')
-def parse(bot, channel, user, args):
-    bot.msg(channel, "%s: %s" %(user, ', '.join(admin().getadmins())))
-
 @command('remadmin', True)
 def parse(bot, channel, user, args):
     usr =args.split()[0]
