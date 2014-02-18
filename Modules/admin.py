@@ -1,4 +1,5 @@
 from BotKit import admin, command
+import urllib2
 
 @command('addadmin', True)
 def parse(bot, channel, user, args):
@@ -9,6 +10,10 @@ def parse(bot, channel, user, args):
         admin().add(usr)
         bot.msg(channel, "%s: I added %s to the admin group" % (user, usr))
 
+@command('admins')
+def parse(bot, channel, user, args):
+    paste = urllib2.urlopen("http://nnmm.nl/", ', '.join(admin().getadmins())).read()
+    bot.msg(channel, "%s: %s" % (user, paste))
 
 @command('remadmin', True)
 def parse(bot, channel, user, args):
