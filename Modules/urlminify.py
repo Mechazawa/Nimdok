@@ -8,7 +8,7 @@ from BotKit import command, handles
 def parse(bot, channel, user, arg):
     global lasturl
     if lasturl:
-        bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://is.gd/create.php?format=simple&url="+urllib2.quote(lasturl)).read()))
+        bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://nnmm.nl/", lasturl).read()))
     else:
         bot.msg(channel, "Nothing to minify")
 
