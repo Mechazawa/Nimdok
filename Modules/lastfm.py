@@ -44,13 +44,16 @@ def parse(bot, channel, user, msg):
                 album = data['recenttracks']['track']['album']['#text']
             else:
                 pass
-            state = stylize.SetColor('last heard', stylize.Color.Red)
             try:
-                data.index('nowplaying')
+                np = data['recenttracks']['track'][0]['@attr']['nowplaying']
             except:
-                pass
+                np = data['recenttracks']['track']['@attr']['nowplaying']
             else:
+                pass
+            if 'true' in np:
                 state = stylize.SetColor('now playing', stylize.Color.Green)
+            else:
+                state = stylize.SetColor('last heard', stylize.Color.Red)
             if album != '':
                 bot.msg(channel, stylize.Bold(user) + ' ' + state + ' ' + \
                                  stylize.Bold(stylize.Trunicate(artist, 45)) + ' - ' + \
