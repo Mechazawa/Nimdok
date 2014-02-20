@@ -12,7 +12,7 @@ import apikeys
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
 infourl = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&format=json&mbid={MBID}'
 dbfile="dbs/lastfm.db"
-@command("n")
+@command("np")
 def parse(bot, channel, user, msg):
     s = msg.split()
     database = sqlite3.connect(dbfile)
