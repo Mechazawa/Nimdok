@@ -45,9 +45,12 @@ def parse(bot, channel, user, msg):
             else:
                 pass
             try:
-                np = data['recenttracks']['track'][0]['@attr']['nowplaying']
+                try:
+                    np = data['recenttracks']['track'][0]['@attr']['nowplaying']
+                except:
+                    np = data['recenttracks']['track']['@attr']['nowplaying']
             except:
-                np = data['recenttracks']['track']['@attr']['nowplaying']
+                np = 'false'
             else:
                 pass
             if 'true' in np:
