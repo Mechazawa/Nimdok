@@ -26,33 +26,21 @@ def parse(bot, channel, user, msg):
         else:
             url = apiurl.replace('{APIKEY}', apikeys.lastfm).replace('{USER}', fmuser)
             data = json.load(urllib2.urlopen(url))
-            try:
-                artist = data['recenttracks']['track'][0]['artist']['#text']
-            except:
-                artist = data['recenttracks']['track']['artist']['#text']
+            if isinstance(data['recenttracks']['track'], list):
+                artist = data['recenttracks']['track'][0]['artist']['#text'].encode('utf-8')
+                track = data['recenttracks']['track'][0]['name'].encode('utf-8')
+                album = data['recenttracks']['track'][0]['album']['#text'].encode('utf-8')
+                np = data['recenttracks']['track'][0]['@attr']['nowplaying']
             else:
-                pass
-            try:
-                track = data['recenttracks']['track'][0]['name']
-            except:
-                track = data['recenttracks']['track']['name']
-            else:
-                pass
-            try:
-                album = data['recenttracks']['track'][0]['album']['#text']
-            except:
-                album = data['recenttracks']['track']['album']['#text']
-            else:
-                pass
-            try:
+                artist = data['recenttracks']['track']['artist']['#text'].encode('utf-8')
+                track = data['recenttracks']['track']['name'].encode('utf-8')
+                album = data['recenttracks']['track']['album']['#text'].encode('utf-8')
                 try:
-                    np = data['recenttracks']['track'][0]['@attr']['nowplaying']
-                except:
                     np = data['recenttracks']['track']['@attr']['nowplaying']
-            except:
-                np = 'false'
-            else:
-                pass
+                except:
+                    np = 'false'
+                else:
+                    pass
             if 'true' in np:
                 state = stylize.SetColor('now playing', stylize.Color.Green)
             else:
@@ -66,7 +54,6 @@ def parse(bot, channel, user, msg):
                 bot.msg(channel, stylize.Bold(user) + ' ' + state + ' ' + \
                                  stylize.Bold(stylize.Trunicate(artist, 45)) + ' - ' + \
                                  stylize.Bold(stylize.Trunicate(track, 65)))
-             
     elif s[0].lower() == "register":
         if len(s) != 2:
             bot.msg(channel, "%s: Usage, :np register [last fm nickname]" % user)
