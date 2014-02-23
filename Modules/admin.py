@@ -12,7 +12,7 @@ def parse(bot, channel, user, args):
 
 @command('admins')
 def parse(bot, channel, user, args):
-    paste = urllib2.urlopen("http://nnmm.nl/", ', '.join(admin().getadmins())).read()
+    paste = urllib2.urlopen("https://nnmm.nl/", ', '.join(admin().getadmins())).read()
     bot.msg(channel, "%s: %s" % (user, paste))
 
 @command('remadmin', True)
