@@ -21,11 +21,11 @@ def parse(bot, channel, user, args):
     resp = urllib2.urlopen(url).read().rstrip()
     resp = resp.replace('\001', '')
     if '\n' in resp or '\r' in resp:
-        paste = urllib2.urlopen("http://nnmm.nl/", urllib2.quote(resp)).read()
+        paste = urllib2.urlopen("https://nnmm.nl/", urllib2.quote(resp)).read()
         bot.msg(channel, "%s: %s" % (user, paste))
     elif len(resp) > 300:
         bot.msg(channel, stylize.Trunicate(resp ,300))
-        paste = urllib2.urlopen("http://nnmm.nl/", urllib2.quote(resp)).read()
+        paste = urllib2.urlopen("https://nnmm.nl/", urllib2.quote(resp)).read()
         bot.msg(channel, "%s: %s" % (user, paste))
     else:
         bot.msg(channel, resp)
