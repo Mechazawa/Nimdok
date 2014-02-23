@@ -10,7 +10,7 @@ def parse(bot, channel, user, arg):
     more = bot.GetMore().strip().replace("\r", "")
     if more:
         if more.count("\n") > 3 or len(more) > 1000:
-            bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("http://nnmm.nl/", more).read()))
+            bot.msg(channel, "%s: %s" % (user, urllib2.urlopen("https://nnmm.nl/", more).read()))
         else:
             bot.msg(channel, more)
     else:
