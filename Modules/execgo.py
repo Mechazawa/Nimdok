@@ -29,11 +29,11 @@ def parse(bot, channel, user, arg):
     result = result.strip()
 
     if '\n' in resp or '\r' in result:
-        paste = urllib2.urlopen("http://nnmm.nl/", urllib2.quote(prog+"\n\n"+result)).read()
+        paste = urllib2.urlopen("https://nnmm.nl/", urllib2.quote(prog+"\n\n"+result)).read()
         bot.msg(channel, "%s: %s" % (user, paste))
     elif len(result) > 300:
         bot.msg(channel, stylize.Trunicate(result ,300))
-        paste = urllib2.urlopen("http://nnmm.nl/", urllib2.quote(prog+"\n\n"+result)).read()
+        paste = urllib2.urlopen("https://nnmm.nl/", urllib2.quote(prog+"\n\n"+result)).read()
         bot.msg(channel, "%s: %s" % (user, paste))
     else:
         bot.msg(channel, result)
