@@ -12,6 +12,6 @@ def dongers(bot, channel, user, msg):
     if "donger" in msg.lower():
         bot.msg(channel, u"ヽ༼ຈل͜ຈ༽ﾉ raise ur dongers ヽ༼ຈل͜ຈ༽ﾉ".encode("utf-8", "ignore"))
 
-@handles("helix")
+@command("helix")
 def consult(bot, channel, user, msg):
     bot.msg(channel ,"This isn't the time for that %s!" % user.upper())
