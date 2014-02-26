@@ -15,4 +15,5 @@ def parse(bot, channel, user, arg):
         if 'no_results' in urllib2.urlopen(apiurl).read():
             bot.msg(channel, user + ': That word is not defined.')
         else:
-            bot.msg(channel, user + ': ' + data['list'][0]['definition'])
+            definition = stylize.Trunicate(data['list'][0]['definition'].encode('utf-8'), 250)
+            bot.msg(channel, user + ': ' + definition)
