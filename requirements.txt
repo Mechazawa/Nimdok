@@ -1,0 +1,2 @@
+pyOpenSSL==0.13
+python-dateutil==1.5
