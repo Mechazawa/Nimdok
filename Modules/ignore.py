@@ -12,7 +12,7 @@ def parse(bot, channel, user, args):
 
 @command('ignored')
 def parse(bot, channel, user, args):
-    paste = urllib2.urlopen("https://nnmm.nl/", ', '.join(ignore().getignores())).read()
+    paste = urllib2.urlopen("https://nnmm.nl/", ', '.join(ignore().getignored())).read()
     bot.msg(channel, "%s: %s" % (user, paste))
 
 @command('acknowledge', True)
