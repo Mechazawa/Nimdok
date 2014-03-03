@@ -3,7 +3,7 @@ import urllib2
 
 @command('addadmin', True)
 def parse(bot, channel, user, args):
-    usr =args.split()[0]
+    usr = args.split()[0]
     if admin().isadmin(usr):
         bot.msg(channel, "%s: %s is already an admin" % (user, usr))
     else:
@@ -17,9 +17,9 @@ def parse(bot, channel, user, args):
 
 @command('remadmin', True)
 def parse(bot, channel, user, args):
-    usr =args.split()[0]
+    usr = args.split()[0]
     if usr.lower() == user.lower():
-        bot.msg(channel, 'lol okay');
+        bot.msg(channel, 'lol okay')
 
     if admin().isadmin(usr):
         admin().remove(usr)
