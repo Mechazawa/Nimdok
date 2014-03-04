@@ -14,6 +14,11 @@ Commands and triggers
 | execgo  | Command | go               | Executes GoLang code, shows the result| No    | :go fmt &#124; fmt.Println ("Hello, 世界") |
 | execpython | Command | py            | Executes Python code, shows the result| No    | :py print "hi"    |
 | fortune | Command | fortune          | Shows your fortune                    | No    | :fortune          |
+| fun     | Command | 8ball            | Answers a question using the 8ball    | No    | :8ball go outside?|
+| fun     | trigger | y/n              | Responds to a y/n question            | No    | Go outside y/n?   |
+| ignore  | Command | ignore           | Makes the bot ignore a user           | Yes   | :ignore user1     |
+| ignore  | Command | ignored          | Shows the ignored users               | No    | :ignored          |
+| ignore  | Command | acknowledge      | Stop ignoring a user                  | Yes   | :acknowledge user1|
 | insult  | Trigger | message          | Insults people when they insult Nimdok| No    | Nimdok sucks      |
 | insult  | Command | insult           | Adds an insult                        | Yes   | :insult okay then |
 | isup    | Command | isup             | Displays if a website is down or not  | No    | :isup google.com  |
