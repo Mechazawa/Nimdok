@@ -40,6 +40,6 @@ Commands and triggers
 | undress | Command | undress          | Prints a link to the current source   | No    | :undress          |
 | urlinfo | Trigger | message          | Prints info about posted urls         | No    | http://example.com/ |
 | urlminify| Command| minify           | Minifies the last posted url          | No    | :minify           |
-| weather | Command | weather          | Displays weather info                 | No    | :weather new york |
+| weather | Command | weather          | Displays weather info                 | No    | :w tokyo          |
 | wolfram | Command | wa               | Executes a Wolfram Alpha query        | No    | :wa wine in france|
 | youtube | Trigger | message          | Displays youtube video info           | No    | \*youtube link\*  |
