@@ -7,7 +7,7 @@ import sqlite3
 import os
 from BotKit import stylize, command
 try:
-    from apikeys import lastfmkey
+    from apikeys import lastfm as lastfmkey
 except:
     lastfmkey = ''
     
