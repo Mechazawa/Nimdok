@@ -3,8 +3,12 @@
 from BotKit import *
 import urllib2
 import json
-import apikeys
-
+try:
+    from apikeys import wunder 
+except:
+    wunder = ''
+    
+@command('weather')
 @command('w')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
@@ -12,7 +16,7 @@ def parse(bot, channel, user, arg):
     else:
         location = urllib2.quote(arg)
         apiurl = 'http://api.wunderground.com/api/{APIKEY}/conditions/q/{LOCATION}.json' \
-                .replace('{APIKEY}', apikeys.wunder).replace('{LOCATION}', location)
+                .replace('{APIKEY}', wunderkey).replace('{LOCATION}', location)
         data = json.load(urllib2.urlopen(apiurl))
         text = urllib2.urlopen(apiurl).read()
         if 'current_observation' in text:
