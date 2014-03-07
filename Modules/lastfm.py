@@ -6,8 +6,11 @@ import json
 import sqlite3
 import os
 from BotKit import stylize, command
-import apikeys
-
+try:
+    from apikeys import lastfmkey
+except:
+    lastfmkey = ''
+    
 
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
 infourl = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&format=json&mbid={MBID}'
@@ -24,7 +27,7 @@ def parse(bot, channel, user, msg):
         if not fmuser:
             bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
         else:
-            url = apiurl.replace('{APIKEY}', apikeys.lastfm).replace('{USER}', fmuser)
+            url = apiurl.replace('{APIKEY}', lastfmkey).replace('{USER}', fmuser)
             data = json.load(urllib2.urlopen(url))
             if isinstance(data['recenttracks']['track'], list):
                 artist = data['recenttracks']['track'][0]['artist']['#text'].encode('utf-8')
