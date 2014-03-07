@@ -4,8 +4,10 @@
 import urllib2
 import lxml.etree as et
 from BotKit import command, stylize
-import apikeys
-
+try:
+  from apikeys import wolframalpha as wolframalphakey
+except:
+  wolframalphakey = ''
 
 apiurl="http://api.wolframalpha.com/v2/query?"
 #set params
@@ -13,7 +15,7 @@ apiurl+="units=metric&location=Amsterdam&reinterpret=true&format=plaintext&exclu
 @command("wa")
 def parse(bot, channel, user, msg):
   #build url
-  url = apiurl + "appid=" + apikeys.wolframalpha
+  url = apiurl + "appid=" + wolframalphakey
   url += "&input=" + urllib2.quote(msg)
   
   #get result
