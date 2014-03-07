@@ -4,7 +4,7 @@ from BotKit import *
 import urllib2
 import json
 try:
-    from apikeys import wunder 
+    from apikeys import wunder as wunderkey
 except:
     wunder = ''
     
