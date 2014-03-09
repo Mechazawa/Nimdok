@@ -17,7 +17,7 @@ def parse(bot, channel, user, msg):
   #build url
   url = apiurl + "appid=" + wolframalphakey
   url += "&input=" + urllib2.quote(msg)
-  
+
   #get result
   raw = urllib2.urlopen(url).read()
   tree = et.fromstring(raw)
@@ -29,8 +29,6 @@ def parse(bot, channel, user, msg):
     result = tree.find('pod').find('subpod').find('plaintext').text
     result = result.encode('UTF-8', 'ignore') #fucking unicode
     bot.msg(channel, "%s: %s" % (user, stylize.Trunicate(result.split('\n')[0] ,300)))
-    if len(result) > 300 or '\n' in result:
-        bot.SetMore(result)
   elif len(tree.findall('tips')) > 0:
       bot.msg(channel, "%s: %s" % (user, tree.find('tips').find('tip').get('text')))
   else:

@@ -30,7 +30,6 @@ Commands and triggers
 | ltc        | Command | ltc              | Shows the current litecoin price       | No    | :ltc                                      |
 | misc       | Command | Dongle           | Forks someone's dongle                 | No    | :dongle shodan                            |
 | misc       | Trigger | donger           | Tells people to raise their dongers    | No    | raise that donger                         |
-| more       | Command | more             | Shows what is stored in the "more"     | No    | :more                                     |
 | ping       | Command | ping             | replies with pong                      | No    | :ping                                     |
 | redirect   | Trigger | message          | Redirects to a 4chan board on >>>/ASD/ | No    | >>>/g/                                    |
 | say        | Command | say              | Put words in the bot's mouth           | No    | :say hello world                          |
