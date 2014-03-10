@@ -7,8 +7,7 @@ try:
     from apikeys import wunder as wunderkey
 except:
     wunder = ''
-    
-@command('weather')
+
 @command('w')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
@@ -23,16 +22,16 @@ def parse(bot, channel, user, arg):
             key = 'current_observation'
             curr_loc = data[key]['display_location']['full']
             weather = data[key]['weather']
-            temp = str(data[key]['temp_c']) + 'C (' + str(data[key]['temp_f']) + 'F)'
-            feel = str(data[key]['feelslike_c']) + 'C (' + str(data[key]['feelslike_f']) + 'F)'
+            temp = str(data[key]['temp_c']) + u'°C (' + str(data[key]['temp_f']) + u'°F)'
+            feel = str(data[key]['feelslike_c']) + u'°C (' + str(data[key]['feelslike_f']) + u'°F)'
             humidity = data[key]['relative_humidity']
             wkph = str(data[key]['wind_kph'])
             wmph = str(data[key]['wind_mph'])
             wind = str(data[key]['wind_string']).replace('MPH', 'km/h').replace(wmph, wkph)
 
-            bot.msg(channel, user + ': ' + curr_loc + ' - ' + temp + ' - Feels like ' \
-                                    + feel + ' - ' + weather + ' - Humidity: ' + humidity \
-                                    + ' - Wind: ' + wind)
+            text = curr_loc + u' · ' + temp + u' · Feels like ' + feel + u' · ' + weather + u' · Humidity: ' + humidity + u' · Wind: ' + wind
+            bot.msg(channel, user + ': ' + text.encode('utf-8'))
+
         elif 'results' in text:
             bot.msg(channel, user + ': there are multiple locations matching "' + arg + '". Try to refine your search.')
 
