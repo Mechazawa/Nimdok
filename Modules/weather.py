@@ -8,7 +8,6 @@ try:
 except:
     wunder = ''
 
-@command('weather')
 @command('w')
 def parse(bot, channel, user, arg):
     if len(arg) == 0:
@@ -29,9 +28,8 @@ def parse(bot, channel, user, arg):
             wkph = str(data[key]['wind_kph'])
             wmph = str(data[key]['wind_mph'])
             wind = str(data[key]['wind_string']).replace('MPH', 'km/h').replace(wmph, wkph)
-# °
-            text = curr_loc + u' · ' + temp + u' · Feels like ' + feel + u' · ' + weather + u' · Humidity: ' + humidity + u' · Wind: ' + wind
 
+            text = curr_loc + u' · ' + temp + u' · Feels like ' + feel + u' · ' + weather + u' · Humidity: ' + humidity + u' · Wind: ' + wind
             bot.msg(channel, user + ': ' + text.encode('utf-8'))
 
         elif 'results' in text:
