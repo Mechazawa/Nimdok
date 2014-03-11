@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-from BotKit import *
+from BotKit import stylize, handles
 
 
 @handles('msg')
