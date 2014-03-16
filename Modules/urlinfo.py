@@ -49,7 +49,14 @@ def parse(bot, channel, user, msg):
                         BS = BeautifulSoup(source[1])
                     else:
                         pass
-                    bot.msg(channel, BS.find('title').text.replace('\r','').replace('\n','').strip().encode('utf-8'))
+                    try:
+                        title = BS.find('title').text.replace('\r', '').replace('\n', '').strip().encode('utf-8')
+                    except:
+                        pass
+                        # no title tag found
+                    else:
+                        bot.msg(channel, title)
+                    # bot.msg(channel, BS.find('title').text.replace('\r','').replace('\n','').strip().encode('utf-8'))
                 elif "text" in mimetype.lower():
                     txt = urllib2.urlopen(m).read().replace("\n", " ").replace("\r", "")
                     bot.msg(channel, stylize.Trunicate(txt))
