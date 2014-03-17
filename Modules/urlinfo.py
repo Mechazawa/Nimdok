@@ -45,6 +45,7 @@ def parse(bot, channel, user, msg):
                         source = urllib2.urlopen(m)
                         BS = BeautifulSoup(source)
                     except: # httplib2
+                        h = httplib2.Http()
                         source = h.request(m)
                         BS = BeautifulSoup(source[1])
                     else:
