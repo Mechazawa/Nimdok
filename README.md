@@ -1,5 +1,6 @@
-Nimdok [![Build Status](https://secure.travis-ci.org/Mechazawa/Nimdok.png)](http://travis-ci.org/Mechazawa/Nimdok)
+Nimdok 
 ======
+[![Build Status](https://secure.travis-ci.org/Mechazawa/Nimdok.png)] (http://travis-ci.org/Mechazawa/Nimdok)[![Dependency Status](https://gemnasium.com/Mechazawa/Nimdok.png)](https://gemnasium.com/Mechazawa/Nimdok)
 
 A bot based on BotKit. Currently running on a couple of channels on rizon.
 Commands and triggers can be found in the README.md in the Modules folder.
