@@ -4,6 +4,11 @@
 from BotKit import *
 import Modules
 import apikeys
+try:
+    from setproctitle import setproctitle
+    setproctitle("Nimdok")
+except ImportError:
+    pass
 
 irc = BotKit(
     host= "irc.rizon.net",
@@ -13,8 +18,9 @@ irc = BotKit(
     nickname= "Nimdok",
     nickpass=apikeys.botpass,
 
-    channels= ["#/g/SICP", "#/g/Spam", "#/g/Summer", "#butthole", "#cockmail"],
-    debug= True
+    channels= ["#/g/SICP", "#/g/Spam", "#/g/bots", "#/g/Summer", "#butthole", "#cockmail"],
+    debug= True,
+#    verbose=True
 )
 
 #general bot stuff
