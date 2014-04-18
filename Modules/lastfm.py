@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import urllib2
@@ -10,7 +9,7 @@ try:
     from apikeys import lastfm as lastfmkey
 except:
     lastfmkey = ''
-    
+
 
 apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
 infourl = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&format=json&mbid={MBID}'
@@ -79,7 +78,7 @@ def parse(bot, channel, user, msg):
                 bot.msg(channel, "No user found with the nickname \"%s\"" % nick)
     cursor.close()
 
-#create database 
+#create database
 if not os.path.isfile(dbfile):
     tmpcon = sqlite3.connect(dbfile)
     cur = tmpcon.cursor()

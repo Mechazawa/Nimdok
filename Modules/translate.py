@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
 from BotKit import command
 import urllib2
 import urllib

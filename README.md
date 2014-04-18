@@ -1,4 +1,4 @@
-Nimdok 
+Nimdok
 ======
 [![Build Status](https://secure.travis-ci.org/Mechazawa/Nimdok.png)] (http://travis-ci.org/Mechazawa/Nimdok)[![Dependency Status](https://gemnasium.com/Mechazawa/Nimdok.png)](https://gemnasium.com/Mechazawa/Nimdok)
 
