@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import urllib2
 import json
 
-from BotKit import command, stylize
+from BotKit import command
 
 
 @command("btc")

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
 import urllib2
 import json
 from BotKit import command, stylize

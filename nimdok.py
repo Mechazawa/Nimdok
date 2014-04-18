@@ -32,7 +32,7 @@ def invite(bot, channel, user):
 @handles('msg')
 def msg(bot, channel, user, msg):
     bot.logger.info("%s %s: %s" % (channel, user, msg))
-    
+
 @command('die', True)
 def die(bot, channel, user, msg):
     bot.msg(channel, "o-okay then")

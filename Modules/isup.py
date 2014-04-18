@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
 import urllib2
 from bs4 import BeautifulSoup
 from BotKit import command

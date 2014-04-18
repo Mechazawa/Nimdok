@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import urllib2
@@ -8,7 +7,7 @@ from BotKit import command, stylize
 
 #apiurl = "https://shell-27.appspot.com/"
 apiurl = "http://py-ide-online.appspot.com/"
-pykey  = "" 
+pykey  = ""
 @command("py")
 def parse(bot, channel, user, args):
     global pykey

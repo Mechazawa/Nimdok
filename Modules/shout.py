@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #<Trev>  I don't always Markov chain. But when I do, I'm remarkably relevant life radio can I get an iphone WOOP WOOP
 
@@ -15,7 +14,7 @@ def parse(bot, channel, user, msg):
     if msg[0] == ":":
         return #Not even worth doing anything after this if we know someone executed a command
     global lastShout
-    if (datetime.now() - lastShout).seconds < random.randint(10,40) or user.lower() == "sicpbot": 
+    if (datetime.now() - lastShout).seconds < random.randint(10,40) or user.lower() == "sicpbot":
         return
     lastShout = datetime.now()
     ret = ""
@@ -46,7 +45,7 @@ def listshouts(bot, channel, user, args):
     c = database.cursor()
     url = urllib2.urlopen("http://nnmm.nl/", '\n'.join([row[0] for row in c.execute("SELECT shout from shouts")])).read()
     bot.msg(channel, "%s: All of my shouts: %s"%(user, url))
-    
+
 
 global lastShout
 lastShout = datetime.now()

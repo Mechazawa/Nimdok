@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
 from BotKit import *
 import random
 
-filename = 'insults.in' 
+filename = 'insults.in'
 insults = [ 'blows', 'is an ass', 'is broken', 'is crap', 'is shit', 'sucks' ]
 
 @handles('msg')
