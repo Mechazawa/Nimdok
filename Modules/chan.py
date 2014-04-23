@@ -17,7 +17,7 @@ def parse(bot, channel, user, msg):
             domain = m.split('/')[2].split('?')[0]
             if 'boards.4chan.org' in domain:
                 try:
-                    gr = re.compile(r'([a-zA-Z0-9]+)/res/([0-9]+)').search(m)
+                    gr = re.compile(r'([a-zA-Z0-9]+)/thread/([0-9]+)').search(m)
                     jo = json.loads(urllib2.urlopen(apiurl + gr.group(0) + '.json').read())["posts"]
                     info = "%s - %s%s | %s %s" % (
                         stylize.SetColor(gr.group(1), stylize.Color.Green),
