@@ -33,6 +33,8 @@ Commands and triggers
 | ping       | Command | ping             | replies with pong                      | No    | :ping                                     |
 | redirect   | Trigger | message          | Redirects to a 4chan board on >>>/ASD/ | No    | >>>/g/                                    |
 | say        | Command | say              | Put words in the bot's mouth           | No    | :say hello world                          |
+| search     | Command | g                | Search stuff on google                 | No    | :g cake                                   |
+| search     | Command | ddg              | Search stuff on duck duck go           | No    | :ddg cake                                 |
 | shout      | Tigger  | message          | Shouts something random                | No    | HELLO WORLD                               |
 | smile      | Trigger | message          | Prints a random smiley                 | No    | smile                                     |
 | translate  | Command | tr               | Translates text                        | No    | :tr {from auto} {to english} hello world  |
