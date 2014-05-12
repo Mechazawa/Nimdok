@@ -76,6 +76,17 @@ def parse(bot, channel, user, msg):
                 bot.msg(channel, "Registered your username. Say :np to show what you're playing")
             else:
                 bot.msg(channel, "No user found with the nickname \"%s\"" % nick)
+    elif s[0].lower() == "3x3":
+        fmuser = False
+        for row in cursor.execute("SELECT lastfm FROM lastfm WHERE nick=?", (user, )):
+            fmuser=row[0]
+        if not fmuser:
+            bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
+        else:
+            collageurl = "http://www.tapmusic.net/lastfm/collage.php?user=%s&type=7day&size=3x3&caption=true" % fmuser
+            imgur = urllib2.urlopen("http://imgur.com/upload?url=%s" % collageurl).geturl().split("/")[-1]
+            bot.msg(channel, "%s: http://i.imgur.com/%s.jpg" % (user, imgur))
+
     cursor.close()
 
 #create database
