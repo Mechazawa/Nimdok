@@ -23,6 +23,7 @@ Commands and triggers
 | insult     | Command | insult           | Adds an insult                         | Yes   | :insult okay then                         |
 | isup       | Command | isup             | Displays if a website is down or not   | No    | :isup google.com                          |
 | lastfm     | Command | np               | Shows what the user is listenting to   | No    | :np                                       |
+| lastfm     | Command | np 3x3           | Generate a 3x3                         | No    | :np 3x3                                   |
 | lastfm     | Command | np register      | Registers the users lastfm username    | No    | :np register usr                          |
 | leet       | Command | leet             | Converts text to "leetspeak"           | No    | :leet hello world                         |
 | lmgtfy     | Command | lmgtfy           | Creates a lmgtfy link                  | No    | :lmgtfy something                         |
