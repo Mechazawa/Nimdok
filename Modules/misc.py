@@ -15,5 +15,6 @@ def dongers(bot, channel, user, msg):
 def consult(bot, channel, user, msg):
     bot.msg(channel ,"This isn't the time for that %s!" % user.upper())
 
-@command("ping") def parse(bot, channel, user, arg):
+@command("ping") 
+def parse(bot, channel, user, arg):
     bot.msg(channel, user+": pong")
