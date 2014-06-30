@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#import urllib2
-#import httplib2
 import requests
 from bs4 import BeautifulSoup
 from BotKit import handles, humanize, stylize
