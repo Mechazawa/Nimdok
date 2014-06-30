@@ -18,23 +18,29 @@ def parse(bot, channel, user, msg):
                 continue
             try:
                 r = requests.request('HEAD', m, verify=False)
-            except: # SSL is fucking weird and nnmm.nl throws `Max retries exceeded with url:'
-                r = requests.request('HEAD', m.replace('https', 'http'))
-            else:
+            except requests.exceptions.ConnectionError: # inexistent websites or issues like `Max retries exceeded'
+                #bot.msg(channel, 'A connection error occured.')
                 pass
-            mime = r.headers['content-type']
-            if 'html' in mime.lower():
-                s = requests.request('GET', m, verify=False).text
-                BS = BeautifulSoup(s)
-                try: # for websites without a title, as sprunge, so they won't spit out an AttributeError
-                    title = BS.find('title').text.replace('\r', ' ').replace('\n', ' ').strip().encode('utf-8')
-                except: # just print the same as if it were a text/plain
-                    bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
-                else: # print the title
-                    bot.msg(channel, title)
-            elif 'text' in mime.lower():
-                s = requests.request('GET', m, verify=False).text
-                bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+            except requests.exceptions.HTTPError:
+                #bot.msg(channel, 'An HTTP error occured.')
+                pass
+            except requests.exceptions.TooManyRedirects:
+                #bot.msg(channel, 'Too many redirects.')
+                pass
             else:
-                size = int(r.headers['content-length'])
-                bot.msg(channel, 'Content-Type: ' + str(mime) + ' - ' + humanize.sizefmt(size))
+                mime = r.headers['content-type']
+                if 'html' in mime.lower():
+                    s = requests.request('GET', m, verify=False).text
+                    BS = BeautifulSoup(s)
+                    try: # for websites without a title, as sprunge, so they won't spit out an AttributeError
+                        title = BS.find('title').text.replace('\r', ' ').replace('\n', ' ').strip().encode('utf-8')
+                    except: # just print the same as if it were a text/plain
+                        bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                    else: # print the title
+                        bot.msg(channel, title)
+                elif 'text' in mime.lower():
+                    s = requests.request('GET', m, verify=False).text
+                    bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                else:
+                    size = int(r.headers['content-length'])
+                    bot.msg(channel, 'Content-Type: ' + str(mime) + ' - ' + humanize.sizefmt(size))
