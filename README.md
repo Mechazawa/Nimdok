@@ -14,7 +14,7 @@ cd Nimdok
 git submodule init
 git submodule update
 #optional; get the latest version of botkit
-cd Botkit
+cd BotKit
 git pull
 cd ..
 ```
