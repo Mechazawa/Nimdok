@@ -21,6 +21,7 @@ def parse(bot, channel, user, msg):
     if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower():
         return
     database = sqlite3.connect(dbfile)
+    database.text_factory = str
     c = database.cursor()
     shouts = []
     for row in c.execute("SELECT shout from shouts"):
