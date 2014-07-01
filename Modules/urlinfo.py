@@ -35,12 +35,12 @@ def parse(bot, channel, user, msg):
                     try: # for websites without a title, as sprunge, so they won't spit out an AttributeError
                         title = BS.find('title').text.replace('\r', ' ').replace('\n', ' ').strip().encode('utf-8')
                     except: # just print the same as if it were a text/plain
-                        bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                        bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
                     else: # print the title
                         bot.msg(channel, title)
                 elif 'text' in mime.lower():
                     s = requests.request('GET', m, verify=False).text
-                    bot.msg(channel, stylize.Truncate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                    bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
                 else:
                     size = int(r.headers['content-length'])
                     bot.msg(channel, 'Content-Type: ' + str(mime) + ' - ' + humanize.sizefmt(size))
