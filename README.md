@@ -9,14 +9,7 @@ Setting up Nimdok
 ======
 First clone the repo
 ```bash
-git clone "https://github.com/Mechazawa/Nimdok.git"
-cd Nimdok
-git submodule init
-git submodule update
-#optional; get the latest version of botkit
-cd Botkit
-git pull
-cd ..
+git clone --recursive "https://github.com/Mechazawa/Nimdok.git"
 ```
 
 Then copy and edit the contents of apikeys.py
