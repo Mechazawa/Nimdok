@@ -42,5 +42,8 @@ def parse(bot, channel, user, msg):
                     s = requests.request('GET', m, verify=False).text
                     bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
                 else:
-                    size = int(r.headers['content-length'])
+                    try:
+                        size = int(r.headers['content-length'])
+                    except KeyError:
+                        size = 0 # can't get content-length for some reason
                     bot.msg(channel, 'Content-Type: ' + str(mime) + ' - ' + humanize.sizefmt(size))
