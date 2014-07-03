@@ -1,4 +1,4 @@
-pyOpenSSL==0.13.1
+pyOpenSSL==0.14
 python-dateutil==2.2
 beautifulsoup4==4.3.2
 httplib2==0.9
