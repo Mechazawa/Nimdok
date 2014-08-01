@@ -37,7 +37,7 @@ def parse(bot, channel, user, msg):
                     except: # just print the same as if it were a text/plain
                         bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
                     else: # print the title
-                        bot.msg(channel, title)
+                        bot.msg(channel, stylize.Trunicate(title))
                 elif 'text' in mime.lower():
                     s = requests.request('GET', m, verify=False).text
                     bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
