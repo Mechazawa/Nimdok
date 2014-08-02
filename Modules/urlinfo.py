@@ -40,7 +40,7 @@ def parse(bot, channel, user, msg):
                         bot.msg(channel, stylize.Trunicate(title))
                 elif 'text' in mime.lower():
                     s = requests.request('GET', m, verify=False).text
-                    bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                    bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' '), 250).encode('utf-8'))
                 else:
                     try:
                         size = int(r.headers['content-length'])
