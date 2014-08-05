@@ -43,7 +43,7 @@ def parse(bot, channel, user, args):
     if noresults:
         bot.msg(channel, 'No results for ' + args)
     else:
-        bot.msg(channel, unhtml(title) + u' · '.encode('utf-8') + url)
+        bot.msg(channel, unhtml(title).encode('utf-8') + u' · '.encode('utf-8') + url)
         bot.msg(channel, unhtml(strip_tags(content)))
 
 @command('ddg')
