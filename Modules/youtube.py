@@ -20,8 +20,8 @@ def parse(bot, channel, user, msg):
                 jo = json.loads(urllib2.urlopen(apiurl.replace("{VID}", vid)).read())
                 data = {
                     "views" : int(jo["entry"]["yt$statistics"]["viewCount"]),
-                    "dislikes" : int(jo["entry"]["yt$rating"]["numDislikes"]),
-                    "likes" : int(jo["entry"]["yt$rating"]["numLikes"]),
+                    "dislikes" : int(jo["entry"]["yt$rating"]["numDislikes"]) if "yt$rating" in jo["entry"] else 0,
+                    "likes" : int(jo["entry"]["yt$rating"]["numLikes"]) if "yt$rating" in jo["entry"] else 0,
                     "author" :jo["entry"]["author"][0]["name"]["$t"],
                     "title" :jo["entry"]["title"]["$t"]
                 }
