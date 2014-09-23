@@ -9,6 +9,7 @@ def getdomain(s, nosub=False):
     return domain.split('.', domain.count(".")-1)[-1] if nosub else domain
 
 ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
+max_title_length = 400
 
 @handles('msg')
 def parse(bot, channel, user, msg):
@@ -40,7 +41,7 @@ def parse(bot, channel, user, msg):
                         bot.msg(channel, stylize.Trunicate(title))
                 elif 'text' in mime.lower():
                     s = requests.request('GET', m, verify=False).text
-                    bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' '), 250).encode('utf-8'))
+                    bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' '), max_title_length).encode('utf-8'))
                 else:
                     try:
                         size = int(r.headers['content-length'])
