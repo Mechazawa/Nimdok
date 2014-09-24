@@ -9,7 +9,7 @@ def getdomain(s, nosub=False):
     return domain.split('.', domain.count(".")-1)[-1] if nosub else domain
 
 ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
-max_title_length = 400
+max_title_length = 250
 
 @handles('msg')
 def parse(bot, channel, user, msg):
@@ -36,9 +36,9 @@ def parse(bot, channel, user, msg):
                     try: # for websites without a title, as sprunge, so they won't spit out an AttributeError
                         title = BS.find('title').text.replace('\r', ' ').replace('\n', ' ').strip().encode('utf-8')
                     except: # just print the same as if it were a text/plain
-                        bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' ')).encode('utf-8'))
+                        bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' '), max_title_length).encode('utf-8'))
                     else: # print the title
-                        bot.msg(channel, stylize.Trunicate(title))
+                        bot.msg(channel, stylize.Trunicate(title, max_title_length))
                 elif 'text' in mime.lower():
                     s = requests.request('GET', m, verify=False).text
                     bot.msg(channel, stylize.Trunicate(s.replace('\r', ' ').replace('\n', ' '), max_title_length).encode('utf-8'))
