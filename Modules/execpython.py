@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from BotKit import command, stylize
 
 
-#apiurl = "https://shell-27.appspot.com/"
-apiurl = "http://py-ide-online.appspot.com/"
+apiurl = "https://shell-27.appspot.com/"
+#apiurl = "http://py-ide-online.appspot.com/"
 pykey  = ""
 @command("py")
 def parse(bot, channel, user, args):
