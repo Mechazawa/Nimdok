@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from BotKit import command, stylize
-from pythonwhois as who
+import pythonwhois as who
 
 
 taken = lambda dmn: False in [who.get_whois(dmn).get('contacts', {}).get(x, None) is None for x in ['admin', 'tech', 'registrant', 'billing']]
