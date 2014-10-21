@@ -34,4 +34,4 @@ def check_domain(bot, channel, user, arg):
             out += " A:" + avail
         if taken:
             out += " T:" + taken
-        bot.msg(channel, domain + out)
+        bot.msg(channel, out)
