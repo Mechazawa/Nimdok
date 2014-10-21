@@ -3,7 +3,17 @@ from BotKit import command, stylize
 import pythonwhois as who
 
 
-taken = lambda dmn: False in [who.get_whois(dmn).get('contacts', {}).get(x, None) is None for x in ['admin', 'tech', 'registrant', 'billing']]
+def taken(dmn):
+    info = who.get_whois(dmn)
+    if "status" in info:
+        return "clientDeleteProhibited" in info['status']
+    if 'registar' in info:
+        return True
+    if "contacts" in info:
+        return False in [info['contacts'].get(x, None) is None for x in ['admin', 'tech', 'registrant', 'billing']]
+    return False
+
+
 @command("domain")
 def check_domain(bot, channel, user, arg):
     args = arg.split()
@@ -15,7 +25,7 @@ def check_domain(bot, channel, user, arg):
 
         out = domain
         for tld in args:
-            out += stylize.Invert(stylize.SetColor(
+            out += " " + stylize.Invert(stylize.SetColor(
                 tld, stylize.Color.Red if taken("%s.%s" % (domain, tld)) else stylize.Color.Green
             ))
         bot.msg(channel, out)
