@@ -22,9 +22,16 @@ def check_domain(bot, channel, user, arg):
                 resp[js['tld']] = js['isRegistered']
 
         out = domain
+        taken = ""
+        avail = ""
         for dmn in resp:
-            out += " " + stylize.Invert(stylize.SetColor(
-                dmn, stylize.Color.Red if resp[dmn] else stylize.Color.Green
-            ))
+            if resp[dmn]:
+                taken += " " + dmn
+            else:
+                avail += " " + dmn
 
-        bot.msg(channel, out)
+        if avail:
+            out += stylize.Invert(stylize.SetColor("A:" + avail, stylize.Color.Green)) + " "
+        if taken:
+            out += stylize.Invert(stylize.SetColor("T:" + taken, stylize.Color.Red))
+        bot.msg(channel, domain + " " + out)
