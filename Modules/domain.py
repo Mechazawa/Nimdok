@@ -4,11 +4,14 @@ import pythonwhois as who
 
 
 def taken(dmn):
-    info = who.get_whois(dmn)
-    if "status" in info:
-        return "clientDeleteProhibited" in info['status']
+    try:
+        info = who.get_whois(dmn)
+    except:
+        return False
     if 'registrar' in info:
         return True
+    if "status" in info:
+        return "clientDeleteProhibited" in info['status']
     if "contacts" in info:
         return False in [info['contacts'].get(x, None) is None for x in ['admin', 'tech', 'registrant', 'billing']]
     return False
