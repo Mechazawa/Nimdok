@@ -31,7 +31,7 @@ def check_domain(bot, channel, user, arg):
                 avail += " " + dmn
 
         if avail:
-            out += stylize.Invert(stylize.SetColor("A:" + avail, stylize.Color.Green)) + " "
+            out += " A:" + avail
         if taken:
-            out += stylize.Invert(stylize.SetColor("T:" + taken, stylize.Color.Red))
-        bot.msg(channel, domain + " " + out)
+            out += " T:" + taken
+        bot.msg(channel, domain + out)
