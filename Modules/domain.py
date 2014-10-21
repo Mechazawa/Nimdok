@@ -1,21 +1,9 @@
 # -*- coding: utf-8 -*-
 from BotKit import command, stylize
-import pythonwhois as who
+from urllib2 import urlopen
+import json
 
-
-def taken(dmn):
-    try:
-        info = who.get_whois(dmn)
-    except:
-        return False
-    if 'registrar' in info:
-        return True
-    if "status" in info:
-        return "clientDeleteProhibited" in info['status']
-    if "contacts" in info:
-        return False in [info['contacts'].get(x, None) is None for x in ['admin', 'tech', 'registrant', 'billing']]
-    return False
-
+url = "https://instantdomainsearch.com/all/%s?tlds=%s&limit=20"
 
 @command("domain")
 def check_domain(bot, channel, user, arg):
@@ -26,9 +14,17 @@ def check_domain(bot, channel, user, arg):
         domain = args[0]
         del args[0]
 
+        resp = dict(zip(*[tuple(args), (False for _ in range(len(args)))]))
+        raw = urlopen(url % (domain, ','.join(args))).read()
+        for r in raw.strip().split('\n'):
+            js = json.loads(r)
+            if 'isRegistered' in js:
+                resp[js['tld']] = js['isRegistered']
+
         out = domain
-        for tld in args:
+        for dmn in resp:
             out += " " + stylize.Invert(stylize.SetColor(
-                tld, stylize.Color.Red if taken("%s.%s" % (domain, tld)) else stylize.Color.Green
+                dmn, stylize.Color.Red if resp[dmn] else stylize.Color.Green
             ))
+
         bot.msg(channel, out)
