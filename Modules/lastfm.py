@@ -4,6 +4,7 @@ import urllib2
 import json
 import sqlite3
 import os
+from re import compile
 from BotKit import stylize, command
 try:
     from apikeys import lastfm as lastfmkey
@@ -11,9 +12,11 @@ except:
     lastfmkey = ''
 
 
-apiurl="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
+apiurl = "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
 infourl = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&format=json&mbid={MBID}'
-dbfile="dbs/lastfm.db"
+dbfile = "dbs/lastfm.db"
+xbyx = compile(r"^([1-9]|10)x([1-9]|10)$")
+
 @command("np")
 def parse(bot, channel, user, msg):
     s = msg.split()
@@ -76,14 +79,14 @@ def parse(bot, channel, user, msg):
                 bot.msg(channel, "Registered your username. Say :np to show what you're playing")
             else:
                 bot.msg(channel, "No user found with the nickname \"%s\"" % nick)
-    elif s[0].lower() == "3x3":
+    elif xbyx.match(s[0].lower()) is not None:
         fmuser = False
         for row in cursor.execute("SELECT lastfm FROM lastfm WHERE nick=?", (user, )):
             fmuser=row[0]
         if not fmuser:
             bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
         else:
-            collageurl = "http://www.tapmusic.net/lastfm/collage.php?user=%s&type=7day&size=3x3&caption=true" % fmuser
+            collageurl = "http://www.tapmusic.net/lastfm/collage.php?user=%s&type=7day&size=%s&caption=true" % (s[0].lower(), fmuser)
             imgur = urllib2.urlopen("http://imgur.com/upload?url=%s" % collageurl).geturl().split("/")[-1]
             bot.msg(channel, "%s: http://i.imgur.com/%s.jpg" % (user, imgur))
 
