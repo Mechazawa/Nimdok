@@ -14,6 +14,8 @@ except:
 
 apiurl = "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={USER}&api_key={APIKEY}&format=json&limit=1"
 infourl = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&format=json&mbid={MBID}'
+#collageurl = "http://www.tapmusic.net/lastfm/collage.php?user=%s&type=7day&size=%s&caption=true"
+collageurl = "http://nsfcd.com/lastfm/collage.php?user=%s&type=7day&size=%s&caption=true"
 dbfile = "dbs/lastfm.db"
 xbyx = compile(r"^([1-9]|10)x([1-9]|10)$")
 
@@ -86,8 +88,8 @@ def parse(bot, channel, user, msg):
         if not fmuser:
             bot.msg(channel, "%s: I don't know you. Use :np register [lastfm nickname]" % user)
         else:
-            collageurl = "http://www.tapmusic.net/lastfm/collage.php?user=%s&type=7day&size=%s&caption=true" % (s[0].lower(), fmuser)
-            imgur = urllib2.urlopen("http://imgur.com/upload?url=%s" % collageurl).geturl().split("/")[-1]
+            url = collageurl % (s[0].lower(), fmuser)
+            imgur = urllib2.urlopen("http://imgur.com/upload?url=%s" % url).geturl().split("/")[-1]
             bot.msg(channel, "%s: http://i.imgur.com/%s.jpg" % (user, imgur))
 
     cursor.close()
