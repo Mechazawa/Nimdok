@@ -79,6 +79,8 @@ encodeChars = "$&+,/:;=?@ <>\"'%#{}|\\^~[]`\n\r\t"
 
 @command("tr")
 def parse(bot, channel, user, arg):
+    bot.msg(channel, "The Google Translate API has changed and thus this module has been disabled")
+    return
     msg = arg.decode('utf-8', 'ignore')
     args = {"from": "auto", "to": "en"}
     s = msg.split(' ')
