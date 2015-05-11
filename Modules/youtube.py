@@ -40,9 +40,20 @@ def parse(bot, channel, user, msg):
 
         resp = requests.get(req_url)
         jo = resp.json()
-        if jo['pageInfo']['totalResults'] < 1:
-            bot.logger.info('Bad youtube id: {}'.format(vid))
-            continue
+
+        if 'error' in jo:
+            error = jo['error']
+            errfmt = 'YouTube API responded with error: {} {} ({})'
+            errmsg = errfmt.format(
+                error['code'],
+                error['message'],
+                error['errors'][0]['reason'],
+            )
+            raise ValueError(errmsg)
+        elif jo['pageInfo']['totalResults'] < 1:
+                bot.logger.info('Bad youtube id: {}'.format(vid))
+                continue
+
         entry = jo['items'][0]
         stats, snippet = entry['statistics'], entry['snippet']
 
