@@ -7,6 +7,7 @@ from datetime import datetime
 from BotKit import handles, command
 import random
 import urllib2
+import string
 
 dbfile="dbs/shout.db"
 @handles('msg')
@@ -18,7 +19,7 @@ def parse(bot, channel, user, msg):
         return
     lastShout = datetime.now()
     ret = ""
-    if msg.upper() != msg or len(msg) <= 2 or msg.upper() == msg.lower():
+    if not isShout(msg):
         return
     database = sqlite3.connect(dbfile)
     database.text_factory = str
@@ -47,6 +48,18 @@ def listshouts(bot, channel, user, args):
     url = urllib2.urlopen("http://nnmm.nl/", '\n'.join([row[0] for row in c.execute("SELECT shout from shouts")])).read()
     bot.msg(channel, "%s: All of my shouts: %s"%(user, url))
 
+def isShout(s):
+    #check for uppercase
+    if s.upper() != s:
+        return False
+    #check for length
+    if len(s) < 4:
+        return False
+    #check for letters vs punctuation
+    l = reduce(lambda sum, c: sum+1 if c in string.uppercase else sum, s, 0)
+    if l < len(s) / 2:
+        return False
+    return True
 
 global lastShout
 lastShout = datetime.now()
