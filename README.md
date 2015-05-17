@@ -5,6 +5,11 @@ Nimdok
 A bot based on BotKit. Currently running on a couple of channels on rizon.
 Commands and triggers can be found in the README.md in the Modules folder.
 
+Notice
+======
+Nimdok is currently [being rewritten](https://github.com/Mechazawa/Nimdok/tree/v3) to be more sane,
+crash less and run on Python 3. 
+
 Setting up Nimdok
 ======
 First clone the repo
