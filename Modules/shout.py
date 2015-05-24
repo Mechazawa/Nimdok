@@ -21,6 +21,7 @@ DB_FILE = 'dbs/shout.db'
 @handles('msg')
 def parse(bot, channel, user, msg):
     global last_shout
+    msg = msg.decode('utf-8', 'ignore')
 
     if msg.startswith(':'):
         return  # Ignore prefixed commands.
