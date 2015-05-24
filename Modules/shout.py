@@ -1,65 +1,77 @@
 # -*- coding: utf-8 -*-
-#<Trev>  I don't always Markov chain. But when I do, I'm remarkably relevant life radio can I get an iphone WOOP WOOP
+# <Trev>  I don't always Markov chain. But when I do, I'm remarkably relevant
+#         life radio can I get an iphone WOOP WOOP
 
 import sqlite3
-import os
 from datetime import datetime
 from BotKit import handles, command
-import random
-import urllib2
-import string
+from random import randint
+import requests
+from contextlib import closing
 
-dbfile="dbs/shout.db"
+CREATE_DB_QUERY = """
+CREATE TABLE IF NOT EXISTS shouts(id INTEGER PRIMARY KEY,
+                                  nick VARCHAR,
+                                  shout VARCHAR)
+"""
+
+DB_FILE = 'dbs/shout.db'
+
+
 @handles('msg')
 def parse(bot, channel, user, msg):
-    if msg[0] == ":":
-        return #Not even worth doing anything after this if we know someone executed a command
-    global lastShout
-    if (datetime.now() - lastShout).seconds < random.randint(10,40) or user.lower() == "sicpbot":
-        return
-    lastShout = datetime.now()
-    ret = ""
-    if not isShout(msg):
-        return
-    database = sqlite3.connect(dbfile)
-    database.text_factory = str
-    c = database.cursor()
-    shouts = []
-    for row in c.execute("SELECT shout from shouts"):
-        shouts.append(row[0])
-    ret = random.choice(shouts)
-    c.execute("INSERT INTO shouts(nick, shout) VALUES (?,?)", (user, msg))
-    database.commit()
-    c.close()
-    if ret:
-        bot.msg(channel, ret)
+    global last_shout
 
-if not os.path.isfile(dbfile):
-        tmpcon = sqlite3.connect(dbfile)
-        c = tmpcon.cursor()
-        c.execute("CREATE TABLE shouts(id INTEGER PRIMARY KEY, nick VARCHAR, shout VARCHAR);")
-        tmpcon.commit()
-        c.close()
+    if msg.startswith(':'):
+        return  # Ignore prefixed commands.
+    try:
+        if (datetime.now() - last_shout).seconds < randint(10, 40):
+            return
+    except NameError:
+        pass
+    if user.lower() == 'sicpbot':
+        return  # Ignore sicpbot.
+    if not is_shout(msg):
+        return
+
+    last_shout = datetime.now()
+
+    with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
+        c.execute(CREATE_DB_QUERY)
+
+        c.execute('SELECT shout FROM shouts ORDER BY RANDOM() LIMIT 1;')
+        row = c.fetchone()
+        if row:
+            bot.msg(channel, row[0].encode('utf-8', 'ignore'))
+
+        c.execute('INSERT INTO shouts(nick, shout) VALUES (?,?)',
+                  (user, msg))
+
 
 @command('shouts')
 def listshouts(bot, channel, user, args):
-    database = sqlite3.connect(dbfile)
-    c = database.cursor()
-    url = urllib2.urlopen("http://nnmm.nl/", '\n'.join([row[0] for row in c.execute("SELECT shout from shouts")])).read()
-    bot.msg(channel, "%s: All of my shouts: %s"%(user, url))
+    with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
+        c.execute(CREATE_DB_QUERY)
 
-def isShout(s):
-    #check for uppercase
-    if s.upper() != s:
-        return False
-    #check for length
-    if len(s) < 4:
-        return False
-    #check for letters vs punctuation
-    l = reduce(lambda sum, c: sum+1 if c in string.uppercase else sum, s, 0)
-    if l < len(s) / 2:
-        return False
-    return True
+        c.execute('SELECT shout FROM shouts')
+        shouts = '\n'.join(row[0] for row in c).encode('utf-8', 'ignore')
 
-global lastShout
-lastShout = datetime.now()
+    url = requests.post(
+        'https://nnmm.nl/',
+        shouts,
+    ).text
+
+    bot.msg(channel, '{}: All of my shouts: {}'.format(user, url))
+
+
+def is_shout(s):
+    """Validate shout
+
+    Must meet the following criteria:
+    1. Is all upper case.
+    2. must be at least 4 letters long.
+    3. At least half of the letters not symbols.
+    """
+    return (s.upper() == s and
+            len(s) >= 4 and
+            sum(1 for c in s if c.isupper()) >= len(s)/2)
