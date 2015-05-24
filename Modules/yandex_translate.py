@@ -27,7 +27,8 @@ def parse(bot, channel, user, arg):
     code = jo['code']
     if code == 501:
         langs_list = '\n'.join(get_langs()['dirs'])
-        url = requests.post('https://nnmm.nl/', langs_list).text
+        # XXX: Nimdok needs SSL with SNI to use nnmm.nl with verification.
+        url = requests.post('https://nnmm.nl/', langs_list, verify=False).text
         bot.msg(channel, '{}: Invalid language; full list: {} ({})'.format(
             user,
             url,

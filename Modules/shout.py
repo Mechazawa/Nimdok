@@ -57,9 +57,11 @@ def listshouts(bot, channel, user, args):
         c.execute('SELECT shout FROM shouts')
         shouts = '\n'.join(row[0] for row in c).encode('utf-8', 'ignore')
 
+    # XXX: Nimdok needs SSL with SNI to use nnmm.nl with verification.
     url = requests.post(
         'https://nnmm.nl/',
         shouts,
+        verify=False,
     ).text
 
     bot.msg(channel, '{}: All of my shouts: {}'.format(user, url))
