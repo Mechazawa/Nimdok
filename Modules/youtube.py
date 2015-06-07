@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+"""
+Parse YouTube URLs
+
+Will parse the following forms (http & https):
+
+- https://youtu.be/dQw4w9WgXcQ
+- https://www.youtube.com/watch?v=dQw4w9WgXcQ
+- https://www.youtube.com/embed/dQw4w9WgXcQ
+"""
+
 import requests
 import re
 from urlparse import urlparse, parse_qs
@@ -20,7 +30,7 @@ def parse(bot, channel, user, msg):
 
         if 'youtube.' in parts.netloc:
             L = parse_qs(parts.query).get('v', '')
-            s = L[0] if L else ''
+            s = L[0] if L else parts.path
         elif 'youtu.be' in parts.netloc:
             s = parts.path
         else:
