@@ -15,6 +15,13 @@ CREATE TABLE IF NOT EXISTS shouts(id INTEGER PRIMARY KEY,
                                   shout VARCHAR)
 """
 
+# Do not insert duplicate shouts.
+INSERT_DB_QUERY = """
+INSERT INTO shouts (nick, shout)
+SELECT ?, ?
+WHERE NOT EXISTS(SELECT 1 FROM shouts WHERE shout = ?)
+"""
+
 DB_FILE = 'dbs/shout.db'
 
 
@@ -45,8 +52,7 @@ def parse(bot, channel, user, msg):
         if row:
             bot.msg(channel, row[0].encode('utf-8', 'ignore'))
 
-        c.execute('INSERT INTO shouts(nick, shout) VALUES (?,?)',
-                  (user, msg))
+        c.execute(INSERT_DB_QUERY, (user, msg, msg))
 
 
 @command('shouts')
