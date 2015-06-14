@@ -75,7 +75,7 @@ def parse(bot, channel, user, msg):
 
         fmt = u'{title} | {channel} {likes} {dislikes} | {views} views'
         message = fmt.format(
-            title=stylize.Bold(stylize.Trunicate(title)),
+            title=stylize.Bold(stylize.Trunicate(title, 60, u'…')),
             channel=yt_channel,
             likes=format_likes(likes),
             dislikes=format_dislikes(dislikes),
