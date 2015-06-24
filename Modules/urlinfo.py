@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import sqlite3
 from bs4 import BeautifulSoup
-from BotKit import handles, humanize, stylize
+from BotKit import handles, humanize, stylize, command
+from contextlib import closing
 
 def getdomain(s, nosub=False):
     domain = s.split('/')[2].split('?')[0]
     return domain.split('.', domain.count(".")-1)[-1] if nosub else domain
 
-ignoreddomains = ["youtube.com", "youtu.be", "4chan.org", "twitter.com"]
+
+CREATE_DB_QUERY = """
+CREATE TABLE IF NOT EXISTS ignored(id INTEGER PRIMARY KEY,
+                                  domain VARCHAR UNIQUE)
+"""
+
+DB_FILE = 'dbs/urls.db'
+
+ignoreddomains = set()
 max_title_length = 250
+
+with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
+    c.execute(CREATE_DB_QUERY)
+    c.execute("SELECT domain from ignored")
+    ignoreddomains = set(map(lambda x: x[0], c))
 
 @handles('msg')
 def parse(bot, channel, user, msg):
@@ -48,3 +63,27 @@ def parse(bot, channel, user, msg):
                     except KeyError:
                         size = 0 # can't get content-length for some reason
                     bot.msg(channel, 'Content-Type: ' + str(mime) + ' - ' + humanize.sizefmt(size))
+
+@command('ignoredomain', True)
+def addignore(bot, channel, user, args):
+    domain = args.split()[0]
+    with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
+        c.execute('SELECT domain FROM ignored WHERE domain = ?', (domain,))
+        if c.fetchone() is None:
+            c.execute('INSERT INTO ignored(domain) VALUES (?)', (domain,))
+            bot.msg(channel, "%s is now ignored" % domain)
+        else:
+            bot.msg(channel, "%s is already ignored" % domain)
+    ignoreddomains.add(domain)
+
+@command('unignoredomain', True)
+def addignore(bot, channel, user, args):
+    domain = args.split()[0]
+    with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
+        c.execute('SELECT domain FROM ignored WHERE domain = ?', (domain,))
+        if c.fetchone() is None:
+            bot.msg(channel, "%s wasn't ignored" % domain)
+        else:
+            c.execute('DELETE FROM ignored WHERE domain = ?', (domain,))
+            bot.msg(channel, "%s is no longer ignored" % domain)
+            ignoreddomains.remove(domain)
