@@ -68,11 +68,10 @@ def parse(bot, channel, user, msg):
 def addignore(bot, channel, user, args):
     domain = args.split()[0]
     with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
-        c.execute('SELECT domain FROM ignored WHERE domain = ?', (domain,))
-        if c.fetchone() is None:
+        try:
             c.execute('INSERT INTO ignored(domain) VALUES (?)', (domain,))
             bot.msg(channel, "%s is now ignored" % domain)
-        else:
+        except sqlite3.IntegrityError:
             bot.msg(channel, "%s is already ignored" % domain)
     ignoreddomains.add(domain)
 
@@ -80,10 +79,9 @@ def addignore(bot, channel, user, args):
 def addignore(bot, channel, user, args):
     domain = args.split()[0]
     with sqlite3.connect(DB_FILE) as conn, closing(conn.cursor()) as c:
-        c.execute('SELECT domain FROM ignored WHERE domain = ?', (domain,))
-        if c.fetchone() is None:
-            bot.msg(channel, "%s wasn't ignored" % domain)
-        else:
-            c.execute('DELETE FROM ignored WHERE domain = ?', (domain,))
+        c.execute('DELETE FROM ignored WHERE domain = ?', (domain,))
+        if c.rowcount > 0:
             bot.msg(channel, "%s is no longer ignored" % domain)
             ignoreddomains.remove(domain)
+        else:
+            bot.msg(channel, "%s wasn't being ignored" % domain)
