@@ -1,5 +1,5 @@
 import requests
-from core import Module, RegexHook, CommandHook
+from core import Module, RegexHook, CommandHook, util
 
 
 class UrlMinify(Module):
@@ -12,6 +12,7 @@ class UrlMinify(Module):
         self.last_url[channel] = matches.group(1)
 
     @CommandHook('minify')
+    @util.threaded
     def minify_url(self, bot, channel, user, args):
         url = self.last_url.get(channel, 'https://rms.sexy')
         url = requests.post('https://nnmm.nl', data=url)
