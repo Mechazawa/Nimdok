@@ -1,7 +1,8 @@
 -e git+https://github.com/Shizmob/pydle#egg=pydle
-pyOpenSSL==0.14
-python-dateutil==2.2
-beautifulsoup4==4.3.2
-httplib2==0.9
-lxml==3.3.5
-requests==2.3.0
+pyOpenSSL
+python-dateutil
+beautifulsoup4
+httplib2
+lxml
+requests
+regex
