@@ -1,9 +1,9 @@
 from re import compile
+from .util import parametrized
 import inspect
 
 
 class Module(object):
-
     def __init__(self, bot):
         self.name = self.__class__.__name__
         self.bot = bot
@@ -31,6 +31,7 @@ class CommandHook(HookWrapper):
     hook_type = 'message'
     command_prefix = ':'
 
+    @parametrized
     def __init__(self, method, command):
         self.command = command.lower()
         super().__init__(method)
@@ -48,6 +49,7 @@ class CommandHook(HookWrapper):
 class RegexHook(HookWrapper):
     hook_type = 'message'
 
+    @parametrized
     def __init__(self, method, regex, flags=0):
         self.regex = compile(regex, flags)
         super().__init__(method)
@@ -61,6 +63,7 @@ class RegexHook(HookWrapper):
 class EventHook(HookWrapper):
     hook_type = 'none'
 
+    @parametrized
     def __init__(self, method, hook_type):
         self.hook_type = hook_type
         super().__init__(method)
