@@ -7,7 +7,6 @@ class Module(object):
     def __init__(self, bot):
         self.name = self.__class__.__name__
         self.bot = bot
-        print("Initialising " + self.name)
 
     def get_hooks(self):
         return [member for member in inspect.getmembers(self)
