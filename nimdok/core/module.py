@@ -7,6 +7,7 @@ class Module(object):
     def __init__(self, bot):
         self.name = self.__class__.__name__
         self.bot = bot
+        print("Initialising " + self.name)
 
     def get_hooks(self):
         return [member for member in inspect.getmembers(self)
@@ -31,7 +32,6 @@ class CommandHook(HookWrapper):
     hook_type = 'message'
     command_prefix = ':'
 
-    @parametrized
     def __init__(self, method, command):
         self.command = command.lower()
         super().__init__(method)
@@ -46,10 +46,14 @@ class CommandHook(HookWrapper):
             return self.method(bot, source, target, message[1])
 
 
+@parametrized
+def on_command(method, command):
+    return CommandHook(method, command)
+
+
 class RegexHook(HookWrapper):
     hook_type = 'message'
 
-    @parametrized
     def __init__(self, method, regex, flags=0):
         self.regex = compile(regex, flags)
         super().__init__(method)
@@ -60,10 +64,19 @@ class RegexHook(HookWrapper):
             return self.method(bot, source, target, message, matches)
 
 
+@parametrized
+def on_regex(method, regex, flags=0):
+    return RegexHook(method, regex, flags)
+
+
 class EventHook(HookWrapper):
     hook_type = 'none'
 
-    @parametrized
     def __init__(self, method, hook_type):
-        self.hook_type = hook_type
         super().__init__(method)
+        self.hook_type = hook_type
+
+
+@parametrized
+def on_event(method, hook_type='message'):
+    return EventHook(method, hook_type)

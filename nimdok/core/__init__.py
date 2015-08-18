@@ -1,1 +1,1 @@
-from .module import Module, HookWrapper, CommandHook, RegexHook
+from .module import on_command, on_event, on_regex, Module
