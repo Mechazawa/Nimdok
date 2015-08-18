@@ -3,6 +3,10 @@ from core import Module, on_regex, on_command, util
 
 
 class UrlMinify(Module):
+    """
+    Url minification, allows you to minify the last url said using nnmm.nl
+    """
+
     def __init__(self, bot):
         super().__init__(bot)
         self.last_url = {}

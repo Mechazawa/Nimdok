@@ -11,7 +11,6 @@ import inspect
 def _hook_glue(bot, methods):
     def hook_interface(*argv, **kwargs):
         for m in methods:
-            print(m[0].name)
             m[1](m[0], bot, *argv, **kwargs)
     return hook_interface
 
