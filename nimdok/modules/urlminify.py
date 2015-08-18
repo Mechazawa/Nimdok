@@ -7,7 +7,7 @@ class UrlMinify(Module):
         super().__init__(bot)
         self.last_url = {}
 
-    #@on_regex(r'(https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|])')
+    @on_regex(r'(https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|])')
     def match_url(self, bot, channel, user, message, matches):
         self.last_url[channel] = matches.group(1)
 
