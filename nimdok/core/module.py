@@ -35,14 +35,14 @@ class CommandHook(HookWrapper):
         self.command = command.lower()
         super().__init__(method)
 
-    def __call__(self, bot, source, target, message):
+    def __call__(self, oself, bot, source, target, message):
         if message[0] != self.command_prefix:
             return
 
         message = message.split(' ', 1) + ['']
         target = self.command_prefix + self.command
         if message[0].lower() == target:
-            return self.method(bot, source, target, message[1])
+            return self.method(oself, bot, source, target, message[1])
 
 
 @parametrized
@@ -57,10 +57,10 @@ class RegexHook(HookWrapper):
         self.regex = compile(regex, flags)
         super().__init__(method)
 
-    def __call__(self, bot, source, target, message):
+    def __call__(self, oself, bot, source, target, message):
         matches = self.regex.match(message)
         if matches is not None:
-            return self.method(bot, source, target, message, matches)
+            return self.method(oself, bot, source, target, message, matches)
 
 
 @parametrized

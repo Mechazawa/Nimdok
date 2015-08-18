@@ -8,10 +8,11 @@ import modules
 import inspect
 
 
-def _hook_glue(hook_type, methods):
-    def hook_interface(self, *argv, **kwargs):
+def _hook_glue(bot, methods):
+    def hook_interface(*argv, **kwargs):
         for m in methods:
-            m(self, *argv, **kwargs)
+            print(m[0].name)
+            m[1](m[0], bot, *argv, **kwargs)
     return hook_interface
 
 
@@ -43,9 +44,12 @@ class Nimdok(Client):
                 if h.hook_type not in hooks:
                     hooks[h.hook_type] = []
 
-                hooks[h.hook_type].append(h)
+                hooks[h.hook_type].append((instances[-1], h))
 
+        self.instances = instances
         for hook, methods in hooks.items():
-            setattr(self, 'on_{}'.format(hook), _hook_glue(hook, methods))
+            print('Registering hooks for on_{}'.format(hook))
+            setattr(self, 'on_{}'.format(hook), _hook_glue(self, methods))
 
-
+    def on_connect(self):
+        self.join("#/g/spam")
