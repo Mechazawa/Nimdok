@@ -49,6 +49,3 @@ class Nimdok(Client):
         for hook, methods in hooks.items():
             print('Registering hooks for on_{}'.format(hook))
             setattr(self, 'on_{}'.format(hook), _hook_glue(self, methods))
-
-    def on_connect(self):
-        self.join("#/g/spam")
