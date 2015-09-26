@@ -40,8 +40,8 @@ class CommandHook(HookWrapper):
             return
 
         message = message.split(' ', 1) + ['']
-        target = self.command_prefix + self.command
-        if message[0].lower() == target:
+        command = self.command_prefix + self.command
+        if message[0].lower() == command:
             return self.method(oself, bot, source, target, message[1])
 
 
