@@ -1,4 +1,4 @@
-from core import nimdok, on_event
+from core import nimdok
 from argparse import ArgumentParser, FileType
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
