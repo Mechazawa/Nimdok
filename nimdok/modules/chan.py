@@ -7,9 +7,9 @@ import requests
 
 
 class Chan(Module):
-
     api_url = "https://a.4cdn.org/{board}/thread/{thread}.json"
-    template_thread_info = "{green}{thread} - {blue}{name}{yellow}{trip}{reset} | {red}r:{responses} i:{images}{reset}"
+    template_thread_info = "{green}{thread}{reset} - {blue}{name}{yellow}{trip}{reset}" + \
+                           " | {red}r:{responses} i:{images}{reset}"
 
     @on_regex(r'https?:\/\/boards.4chan.org/(\w+)/thread/(\d+)', flags=IGNORECASE)
     @threaded
@@ -36,6 +36,3 @@ class Chan(Module):
             response += " | " + truncate(comment, 40)
 
         bot.message(channel, response)
-
-
-
