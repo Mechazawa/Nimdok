@@ -2,9 +2,7 @@ from core import nimdok
 from argparse import ArgumentParser, FileType
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from models import declarative_base, engine, db_session
-from json import dumps as json_dumps
-from sys import exit
+from models import declarative_base, db
 
 parser = ArgumentParser(description='Nimdok; the modular irc bot')
 
@@ -33,14 +31,14 @@ parser.add_argument('-d', '--database', metavar='URI', help='database uri (defau
 args = parser.parse_args()
 
 print('Opening database connection')
-engine = create_engine(args.database)
-db_session = scoped_session(sessionmaker(bind=engine))
-declarative_base.query = db_session.query_property()
+db.engine = create_engine(args.database)
+db.session = scoped_session(sessionmaker(bind=db.engine))
+declarative_base.query = db.session.query_property()
 
 if args.init_db is True:
     print('Creating tables')
-    declarative_base.metadata.create_all(bind=engine)
-    db_session.commit()
+    declarative_base.metadata.create_all(bind=db.engine)
+    db.session.commit()
     print('Created tables')
 
 bot = nimdok.Nimdok(args.nickname, username=args.username, realname=args.realname)

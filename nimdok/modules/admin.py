@@ -1,8 +1,7 @@
 import time
 from core import Module, on_command
-from models import AdminModel, db_session
+from models import AdminModel, db
 from core import util
-from tornado.ioloop import IOLoop
 
 
 def requires_admin_privileges(f):
@@ -22,35 +21,50 @@ class Admin(Module):
     """
 
     template_denied = "Sorry, {user}, I can't let you do that"
-    template_add_help = "{user}, usage: :adminadd [user]"
+    template_add_help = "{user}, usage: :addadmin [user]"
+    template_add_exists = "{user} is already an adrmmin"
+    template_add_success = "{user} has been added to the admin list"
+    template_rm_help = "{user}, usage: :rmadmin [user]"
+    template_rm_not_found = "{user} is not an admin"
+    template_rm_success = "{user} has been removed from the admin list"
 
-    @on_command('adminadd')
+
+    @on_command('addadmin')
     @requires_admin_privileges
-    def match_bots(self, bot, channel, user, args):
+    def command_admin_add(self, bot, channel, user, args):
         args = args.split()
         if len(args) != 1:
             bot.message(channel, Admin.template_add_help.format(user=user))
         else:
             username = args[0]
 
-            if Admin.is_admin(bot, username):
-                bot.message(channel, "{user} is already an admin".format(user=username))
+            if AdminModel.is_admin(username):
+                bot.message(channel, Admin.template_add_exists.format(user=username))
             else:
-                AdminModel.insert(username=username.upper())
-                bot.message(channel, "{user} has been added to the admin list".format(user=username))
+                admin = AdminModel(username.upper())
+                db.session.add(admin)
+                db.session.commit()
+                bot.message(channel, Admin.template_add_success.format(user=username))
 
-    @on_command('beep')
+    @on_command('rmadmin')
     @requires_admin_privileges
-    def test(self, bot, channel, user, args):
-        bot.message(channel, "Yay")
+    def command_admin_rm(self, bot, channel, user, args):
+        args = args.split()
+        if len(args) != 1:
+            bot.message(channel, Admin.template_rm_help.format(user=user))
+        else:
+            username = args[0]
+            if not AdminModel.is_admin(username):
+                bot.message(channel, Admin.template_rm_not_found.format(user=username))
+            else:
+                AdminModel.query.filter_by(username=username.upper()).delete()
+                db.session.commit()
+                bot.message(channel, Admin.template_rm_success.format(user=username))
 
     @staticmethod
     def is_admin(bot, nickname):
-        print("testing admin")
         # Is the user listed as an admin?
-        admin = AdminModel.query \
-                    .filter_by(username=nickname.upper()) \
-                    .count() > 0
+        admin = AdminModel.is_admin(nickname)
 
         # Is the user authenticated into the services?
         if admin:
@@ -59,6 +73,6 @@ class Admin(Module):
                 time.sleep(0.01)
 
             info = info.result()
-            admin = info['identified']
+            admin = info is not None and info['identified']
 
         return admin

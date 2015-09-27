@@ -10,3 +10,8 @@ class AdminModel(declarative_base):
 
     username = Column(String, unique=True, primary_key=True)
 
+    @staticmethod
+    def is_admin(username):
+        return AdminModel.query \
+                   .filter_by(username=username.upper()) \
+                   .count() > 0
