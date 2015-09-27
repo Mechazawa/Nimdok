@@ -1,6 +1,8 @@
+import time
 from core import Module, on_command
 from models import AdminModel, db_session
 from core import util
+from tornado.ioloop import IOLoop
 
 
 def requires_admin_privileges(f):
@@ -10,13 +12,13 @@ def requires_admin_privileges(f):
             return f(self, bot, channel, user, *args, **kwargs)
         else:
             bot.message(channel, Admin.template_denied.format(user=user))
+
     return util.threaded(decorated)
 
 
 class Admin(Module):
     """
-    Basic module that fulfills the requirement that
-    it should respond to .bots
+    This module manages the admin privileges
     """
 
     template_denied = "Sorry, {user}, I can't let you do that"
@@ -29,9 +31,13 @@ class Admin(Module):
         if len(args) != 1:
             bot.message(channel, Admin.template_add_help.format(user=user))
         else:
-            db_session.add(AdminModel(args[0]))
-            db_session.commit()
-            bot.message(channel, "beep " + args[0])
+            username = args[0]
+
+            if Admin.is_admin(bot, username):
+                bot.message(channel, "{user} is already an admin".format(user=username))
+            else:
+                AdminModel.insert(username=username.upper())
+                bot.message(channel, "{user} has been added to the admin list".format(user=username))
 
     @on_command('beep')
     @requires_admin_privileges
@@ -40,14 +46,19 @@ class Admin(Module):
 
     @staticmethod
     def is_admin(bot, nickname):
+        print("testing admin")
         # Is the user listed as an admin?
-        admin = db_session.query(AdminModel)\
-                     .filter_by(username=nickname.upper())\
-                     .one_or_none() is not None
+        admin = AdminModel.query \
+                    .filter_by(username=nickname.upper()) \
+                    .count() > 0
 
         # Is the user authenticated into the services?
         if admin:
-            info = yield bot.whois()
+            info = bot.whois(nickname)
+            while not info.done():
+                time.sleep(0.01)
+
+            info = info.result()
             admin = info['identified']
 
         return admin
