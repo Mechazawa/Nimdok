@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from core import Module, on_regex, on_command, util, IrcColors
-from .admin import requires_admin_privileges
+from .admin import requires_admin
 from models import IgnoredDomainModel
 from urllib.parse import urlsplit
 from humanize import naturalsize
@@ -65,7 +65,7 @@ class Url(Module):
         bot.message(channel, "{}: {}".format(user, url))
 
     @on_command('ignoredomain')
-    @requires_admin_privileges
+    @requires_admin
     def domain_ignore(self, bot, channel, user, args):
         args = args.split()
         if len(args) is not 1:
@@ -81,7 +81,7 @@ class Url(Module):
         bot.message(channel, self.template_ignore.format(domain=domain))
 
     @on_command('acknowledgedomain')
-    @requires_admin_privileges
+    @requires_admin
     def domain_acknowledge(self, bot, channel, user, args):
         args = args.split()
         if len(args) is not 1:

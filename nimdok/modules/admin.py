@@ -4,7 +4,7 @@ from models import AdminModel, db
 from core import util
 
 
-def requires_admin_privileges(f):
+def requires_admin(f):
     def decorated(self, bot, channel, user, *args, **kwargs):
         admin = Admin.is_admin(bot, user)
         if admin:
@@ -30,7 +30,7 @@ class Admin(Module):
 
 
     @on_command('addadmin')
-    @requires_admin_privileges
+    @requires_admin
     def command_admin_add(self, bot, channel, user, args):
         args = args.split()
         if len(args) != 1:
@@ -47,7 +47,7 @@ class Admin(Module):
                 bot.message(channel, Admin.template_add_success.format(user=username))
 
     @on_command('rmadmin')
-    @requires_admin_privileges
+    @requires_admin
     def command_admin_rm(self, bot, channel, user, args):
         args = args.split()
         if len(args) != 1:
@@ -57,7 +57,7 @@ class Admin(Module):
             if not AdminModel.is_admin(username):
                 bot.message(channel, Admin.template_rm_not_found.format(user=username))
             else:
-                AdminModel.query.filter_by(username=username.upper()).delete()
+                AdminModel.query.filter_by(username=username.upper()).remove()
                 db.session.commit()
                 bot.message(channel, Admin.template_rm_success.format(user=username))
 
