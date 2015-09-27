@@ -26,7 +26,6 @@ def _init():
         IrcColors
     ))
 
-    print(list(permutations(IrcColors, 2)) + list(map(lambda c: (c, c), IrcColors)))
     colormap_new.update(dict(map(
         lambda x: (
             "{0}_{1}".format(*x),
@@ -40,4 +39,7 @@ def _init():
 
     IrcColors.update(colormap_new)
     IrcColors.update(colormap_new_lowercase)
+    IrcColors['reset'] = '\x03'
+
+_init()
 

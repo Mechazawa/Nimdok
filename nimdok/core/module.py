@@ -58,9 +58,9 @@ class RegexHook(HookWrapper):
         super().__init__(method)
 
     def __call__(self, oself, bot, source, target, message):
-        matches = self.regex.match(message)
-        if matches is not None:
-            return self.method(oself, bot, source, target, message, matches)
+        match = self.regex.match(message)
+        if match is not None:
+            return self.method(oself, bot, source, target, message, match)
 
 
 @parametrized
