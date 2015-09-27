@@ -1,3 +1,4 @@
+humanize
 migrate
 -e git+https://github.com/Shizmob/pydle#egg=pydle
 beautifulsoup4
