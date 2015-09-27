@@ -30,7 +30,6 @@ class Eval(Module):
 
     @on_command('py')
     def eval_python3(self, *argv):
-        print(*argv)
         self.eval_code(*argv, language='Python / CPython 3.4.1')
 
     @on_command('py2')
