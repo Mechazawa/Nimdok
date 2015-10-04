@@ -28,7 +28,6 @@ class Admin(Module):
     template_rm_not_found = "{user} is not an admin"
     template_rm_success = "{user} has been removed from the admin list"
 
-
     @on_command('addadmin')
     @requires_admin
     def command_admin_add(self, bot, channel, user, args):
