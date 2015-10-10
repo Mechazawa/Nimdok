@@ -31,24 +31,11 @@ class ApiKeyModel(declarative_base):
     @staticmethod
     def set(name, key):
         try:
-            key_value = ApiKeyModel.get(name)
-            if key_value is None:
-                ApiKeyModel.add(name, key)
-            else:
-                ApiKeyModel.update.where(name=name.upper()).values(key=key)
-                db.session.commit()
-            return True
-        except:
-            return False
-
-    @staticmethod
-    def add(name, key):
-        try:
+            ApiKeyModel.query.filter_by(name=name.upper()).remove()
+            db.session.commit()
+        finally:
             db.session.add(ApiKeyModel(name.upper(), key=key))
             db.session.commit()
-            return True
-        except:
-            return False
 
     @staticmethod
     def remove(name):
