@@ -9,7 +9,7 @@ class ApiKeyModel(declarative_base):
         self.name = name
         self.key = key
 
-    domain = Column(String, unique=True, primary_key=True)
+    name = Column(String, unique=True, primary_key=True)
     key = Column(String)
 
     @staticmethod
@@ -34,7 +34,7 @@ class ApiKeyModel(declarative_base):
             ApiKeyModel.query.filter_by(name=name.upper()).remove()
             db.session.commit()
         finally:
-            db.session.add(ApiKeyModel(name.upper(), key=key))
+            db.session.add(ApiKeyModel(name=name.upper(), key=key))
             db.session.commit()
 
     @staticmethod
