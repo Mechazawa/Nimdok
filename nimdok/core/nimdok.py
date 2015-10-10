@@ -4,6 +4,7 @@
 from pydle import Client
 from core import Module
 from core.module import HookWrapper
+from logging import Logger
 import modules
 import inspect
 
@@ -16,9 +17,14 @@ def _hook_glue(bot, methods):
 
 
 class Nimdok(Client):
+    instances = []
+
     def __init__(self, *argv, **kwargs):
         super().__init__(*argv, **kwargs)
+        self.init_modules()
 
+    def init_modules(self):
+        assert isinstance(self.logger, Logger)
         # There be dragons
         imported = [x[1] for x in inspect.getmembers(modules)
                     if "from 'nimdok/modules/" in str(x[1])]
@@ -27,15 +33,15 @@ class Nimdok(Client):
         for i in map(inspect.getmembers, imported):
             list(map(classes.append, [
                 x[1] for x in i
-                if inspect.isclass(x[1])
-                and issubclass(x[1], Module)
-                and x[1] is not Module
+                if inspect.isclass(x[1]) and
+                issubclass(x[1], Module) and
+                x[1] is not Module
             ]))
 
         instances = []
         hooks = {}
         for c in classes:
-            print("Initialising {}".format(c.__name__))
+            self.logger.info("Initialising {}".format(c.__name__))
             instances.append(c(self))
             module_hooks = [x[1] for x in inspect.getmembers(instances[-1]) if isinstance(x[1], HookWrapper)]
 
@@ -47,5 +53,5 @@ class Nimdok(Client):
 
         self.instances = instances
         for hook, methods in hooks.items():
-            print('Registering hooks for on_{}'.format(hook))
+            self.logger.debug('Registering hooks for on_{}'.format(hook))
             setattr(self, 'on_{}'.format(hook), _hook_glue(self, methods))

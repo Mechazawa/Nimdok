@@ -26,6 +26,7 @@ parser_ident.add_argument('-P', '--password', help='password', metavar='PASS', d
 parser.add_argument('--init-db', help='initialize database', action='store_true')
 parser.add_argument('-d', '--database', metavar='URI', help='database uri (default: sqlite:///nimdok.db)',
                     default='sqlite:///nimdok.db')
+parser.add_argument('--debug', action='store_true')
 
 
 args = parser.parse_args()
@@ -47,4 +48,6 @@ bot.connect(
     channels=args.channels.split(','),
     tls=args.ssl, tls_verify=not args.ssl_no_verify
 )
+bot.logger.setLevel(10 if args.debug is True
+                    else 20)
 bot.handle_forever()
