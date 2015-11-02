@@ -38,7 +38,7 @@ class Eval(Module):
 
     @on_command('php')
     def eval_php(self, *argv):
-        argv[3] = "<?php {3}".format(*argv)
+        argv[3] = "<?php {}".format(argv[3])
         self.eval_code(*argv, language='php/php-5.5.14')
 
     @on_command('hs')
