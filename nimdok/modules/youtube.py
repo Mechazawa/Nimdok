@@ -24,7 +24,6 @@ class Youtube(Module):
         }
 
         response = requests.get(self._base_url, params=params).json()
-        print(response)
         response = response['items' if 'items' in response else 'videos']
 
         stats = response['statistics']
