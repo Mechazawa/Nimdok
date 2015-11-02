@@ -22,6 +22,7 @@ class WolframAlpha(Module):
         if tree.get('error') != 'false':
             bot.message(channel, "WolframAlpha returned an error")
         elif int(tree.get('numpods')) > 0:
+            # TODO find result, don't grab first plaintext
             result = tree.find('pod')\
                          .find('subpod')\
                          .find('plaintext').text
