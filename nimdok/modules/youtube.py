@@ -19,7 +19,7 @@ class Youtube(Module):
     def get_info(self, video):
         params = {
             'key': self._api_key,
-            'video': video,
+            'id': video,
         }
 
         response = requests.get(self._base_url, params=params) \
