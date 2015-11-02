@@ -37,9 +37,9 @@ class Eval(Module):
         self.eval_code(*argv, language='python/cpython-2.7.8')
 
     @on_command('php')
-    def eval_php(self, *argv):
-        argv[3] = "<?php {}".format(argv[3])
-        self.eval_code(*argv, language='php/php-5.5.14')
+    def eval_php(self, bot, channel, user, code):
+        code = "<?php {}".format(code)
+        self.eval_code(bot, channel, user, code, language='php/php-5.5.14')
 
     @on_command('hs')
     def eval_haskell(self, *argv):
