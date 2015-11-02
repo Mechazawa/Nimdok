@@ -40,6 +40,10 @@ class Eval(Module):
     def eval_php(self, bot, channel, user, code):
         code = "<?php {}".format(code)
         self.eval_code(bot, channel, user, code, language='php/php-5.5.14')
+    
+    @on_command('js')
+    def eval_js(self, *argv):
+        self.eval_code(*argv, language='javascript/node-0.10.29')
 
     @on_command('hs')
     def eval_haskell(self, *argv):
