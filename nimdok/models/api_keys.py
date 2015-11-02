@@ -25,13 +25,14 @@ class ApiKeyModel(declarative_base):
     @staticmethod
     def get(name):
         return ApiKeyModel.query \
-                   .filter_by(domain=name.upper()) \
+                   .filter_by(name=name.upper()) \
                    .first()
 
     @staticmethod
     def set(name, key):
         try:
-            ApiKeyModel.query.filter_by(name=name.upper()).remove()
+            apiKey = ApiKeyModel.get(name)
+            db.session.delete(apiKey)
             db.session.commit()
         finally:
             db.session.add(ApiKeyModel(name=name.upper(), key=key))
