@@ -20,10 +20,12 @@ class Youtube(Module):
         params = {
             'key': self._api_key,
             'id': video,
+            'part': 'snippet,statistics',
         }
 
-        response = requests.get(self._base_url, params=params) \
-                           .json()['items'][0]
+        response = requests.get(self._base_url, params=params).json()
+        print(response)
+        response = response['items' if 'items' in response else 'videos']
 
         stats = response['statistics']
         info = response['snippet']
