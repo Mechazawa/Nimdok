@@ -7,7 +7,7 @@ class VirtualCurrencies(Module):
     Allows you to get the current value of virtual currencies
     """
 
-    template = "{currency} · Buy: {buy}$ · Sell: {sell}$ · Last: {last}$ · High: {high}$ · Low: {low}$ · bter.com"
+    template = "{currency} · Buy: ${buy} · Sell: ${sell} · Last: ${last} · High: ${high} · Low: ${low} · bter.com"
     url = "http://data.bter.com/api/1/ticker/{}_usd"
 
     def _build_message(self, currency):
