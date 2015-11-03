@@ -32,6 +32,7 @@ class Admin(Module):
     template_module_already_enabled = "{user}: {module} was already enabled"
     template_module_disabled = "{user}: disabled {module}"
     template_module_already_disabled = "{user}: {module} was already disabled"
+    template_module_nope = "{user}: https://www.youtube.com/embed/gvdf5n-zI14?autoplay=1"
 
     @on_command('admin add')
     @requires_admin
@@ -99,7 +100,9 @@ class Admin(Module):
     @requires_admin
     def command_mod_disable(self, bot, channel, user, args):
         module = args.split(' ', 1)[0]
-        if bot.find_module(module) is None:
+        if module.upper() == 'ADMIN':
+            message = self.template_module_nope.format(user=user)
+        elif bot.find_module(module) is None:
             message = self.template_module_not_found.format(user=user, module=module)
         elif ModuleModel.disable(module):
             message = self.template_module_disabled.format(user=user, module=module)
