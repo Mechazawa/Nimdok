@@ -26,6 +26,8 @@ class Url(Module):
     @on_regex(r'(https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|])')
     @util.threaded
     def match_url(self, bot, channel, user, message, matches):
+        return #disabled for now
+
         url = matches.group(1)
         self.last_url[channel] = url
 
