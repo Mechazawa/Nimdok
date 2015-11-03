@@ -22,8 +22,7 @@ class WolframAlpha(Module):
         if tree.get('error') != 'false':
             bot.message(channel, "WolframAlpha returned an error")
         elif int(tree.get('numpods')) > 0:
-            # TODO find result, don't grab first plaintext
-            result = tree.find('pod')\
+            result = tree.find("pod[@title='Result']")\
                          .find('subpod')\
                          .find('plaintext').text
 
@@ -42,5 +41,4 @@ class WolframAlpha(Module):
         params['input'] = query
 
         response = requests.get(self._base_url, params=params).text
-        print(response)
         return cElementTree.fromstring(response)
