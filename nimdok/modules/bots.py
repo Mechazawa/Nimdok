@@ -10,4 +10,4 @@ class Bots(Module):
 
     @on_regex(r'^.bots\s*$', flags=IGNORECASE)
     def match_bots(self, bot, channel, *argv):
-        bot.message(channel, "[Python] See https://github.com/Mechazawa/Nimdok")
+        bot.message(channel, "Reporting in! [Python] See https://github.com/Mechazawa/Nimdok")
