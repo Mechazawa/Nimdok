@@ -1,5 +1,4 @@
 from core import Module, on_command
-from core.util import threaded
 from models import ApiKeyModel
 from xml.etree import cElementTree
 import requests

@@ -6,9 +6,9 @@ import requests
 
 class ApiKeys(Module):
 
-    @on_command('setkey')
+    @on_command('apikey set')
     @requires_admin
-    def command_add(self, bot, channel, user, args):
+    def command_set(self, bot, channel, user, args):
         if channel[0] == '#':
             bot.message(user, "{user}: This command can only be ran by pm-ing the bot".format(user=user))
             return
@@ -21,7 +21,7 @@ class ApiKeys(Module):
         ApiKeyModel.set(*args)
         bot.message(user, "Set key for {api}".format(api=args[0]))
 
-    @on_command('listkeys')
+    @on_command('apikey list')
     @requires_admin
     def command_list(self, bot, channel, user, args):
         if channel[0] == '#':
