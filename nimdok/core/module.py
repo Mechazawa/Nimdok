@@ -39,9 +39,10 @@ class CommandHook(HookWrapper):
         if message[0] != self.command_prefix:
             return
 
-        message = message.split(' ', 1) + ['']
         command = self.command_prefix + self.command
-        if message[0].lower() == command:
+        start, end = message[:len(command)], message[len(command):]
+
+        if start.lower() == command and (end == '' or end[0] == ' '):
             return self.method(oself, bot, source, target, message[1])
 
 
