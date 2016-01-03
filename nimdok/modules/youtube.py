@@ -8,7 +8,7 @@ class Youtube(Module):
     _base_url = "https://www.googleapis.com/youtube/v3/videos"
     _template = "{title} | {channel} {green}↑{likes:,} {red}↓{dislikes:,}{reset} | {views:,} views"
 
-    @on_regex(r'https?://(?:www\.)?(?:youtu\.be|youtube.\w{2,}.+)(?:\W|^)([A-Za-z0-9\-_]{11})(?:\W|$)')
+    @on_regex(r'.*\bhttps?://(?:www\.)?(?:youtu\.be|youtube.\w{2,}.+)(?:\W|^)([A-Za-z0-9\-_]{11})\b.*')
     def on_youtube(self, bot, channel, user, message, matches):
         video = matches.group(1)
         info = self.get_info(video)
